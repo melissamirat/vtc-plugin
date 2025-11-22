@@ -1,23 +1,23 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/hooks/useAuth';
-import Link from 'next/link';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
+import Link from "next/link";
 
 export default function RegisterPage() {
   const router = useRouter();
   const { signup } = useAuth();
-  
+
   const [formData, setFormData] = useState({
-    displayName: '',
-    companyName: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
+    displayName: "",
+    companyName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
-  
-  const [error, setError] = useState('');
+
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -29,16 +29,16 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     // Validation
     if (formData.password !== formData.confirmPassword) {
-      setError('Les mots de passe ne correspondent pas');
+      setError("Les mots de passe ne correspondent pas");
       return;
     }
 
     if (formData.password.length < 6) {
-      setError('Le mot de passe doit contenir au moins 6 caractères');
+      setError("Le mot de passe doit contenir au moins 6 caractères");
       return;
     }
 
@@ -52,17 +52,37 @@ export default function RegisterPage() {
     );
 
     if (result.success) {
-      router.push('/dashboard');
+      router.push("/dashboard");
     } else {
-      setError(result.error || 'Une erreur est survenue');
+      setError(result.error || "Une erreur est survenue");
     }
 
     setLoading(false);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-12 px-4">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4 py-8">
+      <div className="max-w-md w-full">
+        {/* Bouton retour */}
+        <button
+          onClick={() => router.push("/")}
+          className="mb-4 flex items-center text-blue-600 hover:text-blue-700 font-medium transition"
+        >
+          <svg
+            className="w-5 h-5 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            ></path>
+          </svg>
+          Retour à l accueil
+        </button>
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Créer un compte
@@ -80,7 +100,10 @@ export default function RegisterPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="displayName" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="displayName"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Nom complet *
             </label>
             <input
@@ -96,7 +119,10 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label htmlFor="companyName" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="companyName"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Nom de votre entreprise *
             </label>
             <input
@@ -112,7 +138,10 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Email *
             </label>
             <input
@@ -128,7 +157,10 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Mot de passe *
             </label>
             <input
@@ -144,7 +176,10 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="confirmPassword"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Confirmer le mot de passe *
             </label>
             <input
@@ -164,13 +199,16 @@ export default function RegisterPage() {
             disabled={loading}
             className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
           >
-            {loading ? 'Création du compte...' : 'Créer mon compte'}
+            {loading ? "Création du compte..." : "Créer mon compte"}
           </button>
         </form>
 
         <p className="mt-6 text-center text-sm text-gray-600">
-          Vous avez déjà un compte ?{' '}
-          <Link href="/auth/login" className="text-blue-600 hover:text-blue-700 font-medium">
+          Vous avez déjà un compte ?{" "}
+          <Link
+            href="/auth/login"
+            className="text-blue-600 hover:text-blue-700 font-medium"
+          >
             Se connecter
           </Link>
         </p>
