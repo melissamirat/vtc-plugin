@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/hooks/useAuth';
-import Link from 'next/link';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
+import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
   const { login } = useAuth();
-  
+
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
-  
-  const [error, setError] = useState('');
+
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -26,30 +26,46 @@ export default function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
 
     const result = await login(formData.email, formData.password);
 
     if (result.success) {
-      router.push('/dashboard');
+      router.push("/dashboard");
     } else {
-      setError('Email ou mot de passe incorrect');
+      setError("Email ou mot de passe incorrect");
     }
 
     setLoading(false);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-12 px-4">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4 py-8">
+      <div className="max-w-md w-full">
+        {/* Bouton retour */}
+        <button
+          onClick={() => router.push("/")}
+          className="mb-4 flex items-center text-blue-600 hover:text-blue-700 font-medium transition"
+        >
+          <svg
+            className="w-5 h-5 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            ></path>
+          </svg>
+          Retour à l accueil
+        </button>
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Connexion
-          </h1>
-          <p className="text-gray-600">
-            Accédez à votre tableau de bord
-          </p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Connexion</h1>
+          <p className="text-gray-600">Accédez à votre tableau de bord</p>
         </div>
 
         {error && (
@@ -60,7 +76,10 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Email
             </label>
             <input
@@ -76,7 +95,10 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Mot de passe
             </label>
             <input
@@ -99,12 +121,18 @@ export default function LoginPage() {
                 type="checkbox"
                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
-              <label htmlFor="remember" className="ml-2 block text-sm text-gray-700">
+              <label
+                htmlFor="remember"
+                className="ml-2 block text-sm text-gray-700"
+              >
                 Se souvenir de moi
               </label>
             </div>
 
-            <Link href="/auth/reset-password" className="text-sm text-blue-600 hover:text-blue-700">
+            <Link
+              href="/auth/reset-password"
+              className="text-sm text-blue-600 hover:text-blue-700"
+            >
               Mot de passe oublié ?
             </Link>
           </div>
@@ -114,13 +142,16 @@ export default function LoginPage() {
             disabled={loading}
             className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
           >
-            {loading ? 'Connexion...' : 'Se connecter'}
+            {loading ? "Connexion..." : "Se connecter"}
           </button>
         </form>
 
         <p className="mt-6 text-center text-sm text-gray-600">
-          Pas encore de compte ?{' '}
-          <Link href="/auth/register" className="text-blue-600 hover:text-blue-700 font-medium">
+          Pas encore de compte ?{" "}
+          <Link
+            href="/auth/register"
+            className="text-blue-600 hover:text-blue-700 font-medium"
+          >
             Créer un compte
           </Link>
         </p>
