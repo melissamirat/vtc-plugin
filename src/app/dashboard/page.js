@@ -277,70 +277,70 @@ export default function DashboardPage() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats Cards - CLIQUABLES */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div 
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-8">
+          <button 
             onClick={() => router.push('/dashboard/reservations')}
-            className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-blue-500 hover:shadow-xl transition cursor-pointer hover:scale-[1.02]"
+            className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 border-l-4 border-blue-500 hover:shadow-xl transition active:scale-95 text-left w-full"
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">
+                <p className="text-xs sm:text-sm font-medium text-gray-600">
                   Total Réservations
                 </p>
-                <p className="text-3xl font-bold text-gray-900 mt-2">
+                <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-1 sm:mt-2">
                   {stats.total}
                 </p>
               </div>
-              <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center">
-                <span className="text-2xl">📋</span>
+              <div className="w-10 h-10 sm:w-14 sm:h-14 bg-blue-100 rounded-xl flex items-center justify-center">
+                <span className="text-xl sm:text-2xl">📋</span>
               </div>
             </div>
-          </div>
+          </button>
 
-          <div 
+          <button 
             onClick={() => router.push('/dashboard/reservations?filter=pending')}
-            className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-orange-500 hover:shadow-xl transition cursor-pointer hover:scale-[1.02]"
+            className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 border-l-4 border-orange-500 hover:shadow-xl transition active:scale-95 text-left w-full"
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">En Attente</p>
-                <p className="text-3xl font-bold text-gray-900 mt-2">
+                <p className="text-xs sm:text-sm font-medium text-gray-600">En Attente</p>
+                <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-1 sm:mt-2">
                   {stats.pending}
                 </p>
               </div>
-              <div className="w-14 h-14 bg-orange-100 rounded-xl flex items-center justify-center">
-                <span className="text-2xl">⏳</span>
+              <div className="w-10 h-10 sm:w-14 sm:h-14 bg-orange-100 rounded-xl flex items-center justify-center">
+                <span className="text-xl sm:text-2xl">⏳</span>
               </div>
             </div>
-          </div>
+          </button>
 
-          <div 
+          <button 
             onClick={() => router.push('/dashboard/reservations?filter=confirmed')}
-            className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-green-500 hover:shadow-xl transition cursor-pointer hover:scale-[1.02]"
+            className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 border-l-4 border-green-500 hover:shadow-xl transition active:scale-95 text-left w-full"
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Confirmées</p>
-                <p className="text-3xl font-bold text-gray-900 mt-2">
+                <p className="text-xs sm:text-sm font-medium text-gray-600">Confirmées</p>
+                <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-1 sm:mt-2">
                   {stats.confirmed}
                 </p>
               </div>
-              <div className="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center">
-                <span className="text-2xl">✅</span>
+              <div className="w-10 h-10 sm:w-14 sm:h-14 bg-green-100 rounded-xl flex items-center justify-center">
+                <span className="text-xl sm:text-2xl">✅</span>
               </div>
             </div>
-          </div>
+          </button>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-purple-500 hover:shadow-xl transition">
+          <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 border-l-4 border-purple-500">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Chiffre d'affaires</p>
-                <p className="text-3xl font-bold text-gray-900 mt-2">
+                <p className="text-xs sm:text-sm font-medium text-gray-600">Chiffre d'affaires</p>
+                <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-1 sm:mt-2">
                   {stats.revenue.toFixed(0)}€
                 </p>
               </div>
-              <div className="w-14 h-14 bg-purple-100 rounded-xl flex items-center justify-center">
-                <span className="text-2xl">💰</span>
+              <div className="w-10 h-10 sm:w-14 sm:h-14 bg-purple-100 rounded-xl flex items-center justify-center">
+                <span className="text-xl sm:text-2xl">💰</span>
               </div>
             </div>
           </div>
