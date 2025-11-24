@@ -1,84 +1,57 @@
-"use client";
+'use client';
 
-import { useAuth } from "@/hooks/useAuth";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { createWidget, getUserWidgets, updateWidget } from "@/lib/firestore";
+import { useAuth } from '@/hooks/useAuth';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { getUserWidgets, updateWidget } from '@/lib/firestore';
 
 export default function SettingsPage() {
   const { user, userData } = useAuth();
   const router = useRouter();
 
-  const [widgets, setWidgets] = useState([]);
   const [currentWidget, setCurrentWidget] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState({ type: "", text: "" });
+  const [message, setMessage] = useState({ type: '', text: '' });
+  const [activeTab, setActiveTab] = useState('branding');
+  const [copied, setCopied] = useState(false);
+  const [iframeKey, setIframeKey] = useState(Date.now()); // Pour forcer le refresh de l'iframe
 
-  const [config, setConfig] = useState({
+  // Détecter le hash dans l'URL pour ouvrir le bon onglet
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const hash = window.location.hash.replace('#', '');
+      if (['branding', 'texts', 'email', 'export'].includes(hash)) {
+        setActiveTab(hash);
+      }
+    }
+  }, []);
+
+  // Configuration par défaut
+  const defaultConfig = {
     branding: {
-      companyName: "",
-      logo: "",
-      primaryColor: "#2563eb",
-      secondaryColor: "#1e40af",
-      accentColor: "#3b82f6",
-    },
-    pricing: {
-      baseFee: 10.0,
-      pricePerKm: {
-        berline: 1.2,
-        van: 1.8,
-        prestige: 3.0,
-      },
-      supplements: {
-        extraLuggage: 5.0,
-        nightSurcharge: 15.0,
-      },
-      enableNightSurcharge: true,
-      enableLuggageOption: true,
-      nightHours: {
-        start: 22,
-        end: 6,
-      },
-    },
-    email: {
-      smtpHost: "",
-      smtpPort: 465,
-      smtpUser: "",
-      smtpPassword: "",
-      adminEmail: "",
-      fromName: "",
-    },
-    vehicles: {
-      berline: {
-        enabled: true,
-        name: "Berline Confort",
-        description: "Véhicule standard 4 places",
-        maxPassengers: 3,
-      },
-      van: {
-        enabled: true,
-        name: "Van 7 Places",
-        description: "Idéal pour groupes ou familles",
-        maxPassengers: 7,
-      },
-      prestige: {
-        enabled: true,
-        name: "Véhicule Prestige",
-        description: "Berline haut de gamme",
-        maxPassengers: 3,
-      },
+      companyName: '',
+      logo: '',
+      primaryColor: '#2563eb',
+      secondaryColor: '#ffffff',
+      accentColor: '#3b82f6',
     },
     texts: {
-      formTitle: "Réservation VTC",
-      formSubtitle: "Calculez votre prix et réservez en quelques clics",
-      submitButton: "Réserver & Confirmer le Prix",
+      formTitle: 'Réservation VTC',
+      formSubtitle: 'Calculez votre prix et réservez en quelques clics',
+      submitButton: 'Réserver & Confirmer le Prix',
     },
-  });
+    email: {
+      adminEmail: '',
+      fromName: '',
+    },
+  };
+
+  const [config, setConfig] = useState(defaultConfig);
 
   useEffect(() => {
     if (!user) {
-      router.push("/auth/login");
+      router.push('/auth/login');
       return;
     }
     loadWidgets();
@@ -89,9 +62,24 @@ export default function SettingsPage() {
 
     const result = await getUserWidgets(user.uid);
     if (result.success && result.data.length > 0) {
-      setWidgets(result.data);
-      setCurrentWidget(result.data[0]);
-      setConfig(result.data[0].config);
+      const widget = result.data[0];
+      setCurrentWidget(widget);
+      
+      // Fusionner avec les valeurs par défaut
+      setConfig({
+        branding: {
+          ...defaultConfig.branding,
+          ...widget.config?.branding,
+        },
+        texts: {
+          ...defaultConfig.texts,
+          ...widget.config?.texts,
+        },
+        email: {
+          ...defaultConfig.email,
+          ...widget.config?.email,
+        },
+      });
     }
     setLoading(false);
   };
@@ -106,59 +94,59 @@ export default function SettingsPage() {
     }));
   };
 
-  const handleNestedChange = (section, subsection, field, value) => {
-    setConfig((prev) => ({
-      ...prev,
-      [section]: {
-        ...prev[section],
-        [subsection]: {
-          ...prev[section][subsection],
-          [field]: value,
-        },
-      },
-    }));
-  };
-
   const handleSave = async () => {
+    if (!currentWidget) return;
+    
     setSaving(true);
-    setMessage({ type: "", text: "" });
+    setMessage({ type: '', text: '' });
 
     try {
-      if (currentWidget) {
-        // Mise à jour du widget existant
-        const result = await updateWidget(currentWidget.id, { config });
-        if (result.success) {
-          setMessage({
-            type: "success",
-            text: "✅ Configuration enregistrée avec succès !",
-          });
-        } else {
-          setMessage({
-            type: "error",
-            text: "❌ Erreur lors de la sauvegarde",
-          });
-        }
+      const result = await updateWidget(currentWidget.id, {
+        'config.branding': config.branding,
+        'config.texts': config.texts,
+        'config.email': config.email,
+      });
+
+      if (result.success) {
+        setMessage({ type: 'success', text: '✅ Configuration enregistrée avec succès !' });
+        setIframeKey(Date.now()); // Rafraîchir l'iframe pour voir les changements
       } else {
-        // Création d'un nouveau widget
-        const result = await createWidget(user.uid, config);
-        if (result.success) {
-          setMessage({ type: "success", text: "✅ Widget créé avec succès !" });
-          loadWidgets(); // Recharger la liste
-        } else {
-          setMessage({ type: "error", text: "❌ Erreur lors de la création" });
-        }
+        setMessage({ type: 'error', text: '❌ Erreur lors de la sauvegarde' });
       }
     } catch (error) {
-      setMessage({ type: "error", text: "❌ " + error.message });
+      setMessage({ type: 'error', text: '❌ ' + error.message });
     }
 
     setSaving(false);
-    setTimeout(() => setMessage({ type: "", text: "" }), 5000);
+    setTimeout(() => setMessage({ type: '', text: '' }), 5000);
+  };
+
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const getWidgetUrl = () => {
+    if (typeof window !== 'undefined' && currentWidget) {
+      return `${window.location.origin}/widget/${currentWidget.id}`;
+    }
+    return '';
+  };
+
+  const getIframeCode = () => {
+    return `<iframe 
+  src="${getWidgetUrl()}" 
+  width="100%" 
+  height="800" 
+  frameborder="0"
+  style="border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"
+></iframe>`;
   };
 
   if (!user || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
           <p className="mt-4 text-gray-600">Chargement...</p>
@@ -174,15 +162,11 @@ export default function SettingsPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">
-                Configuration du Widget
-              </h1>
-              <p className="text-sm text-gray-600">
-                Personnalisez votre widget de réservation
-              </p>
+              <h1 className="text-2xl font-bold text-gray-900">⚙️ Paramètres du Widget</h1>
+              <p className="text-sm text-gray-600">Personnalisez l'apparence de votre formulaire de réservation</p>
             </div>
             <button
-              onClick={() => router.push("/dashboard")}
+              onClick={() => router.push('/dashboard')}
               className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
             >
               ← Retour
@@ -192,408 +176,407 @@ export default function SettingsPage() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Message de succès/erreur */}
+        {/* Message */}
         {message.text && (
-          <div
-            className={`mb-6 p-4 rounded-lg ${
-              message.type === "success"
-                ? "bg-green-50 text-green-700 border border-green-200"
-                : "bg-red-50 text-red-700 border border-red-200"
-            }`}
-          >
+          <div className={`mb-6 p-4 rounded-lg ${
+            message.type === 'success'
+              ? 'bg-green-50 text-green-700 border border-green-200'
+              : 'bg-red-50 text-red-700 border border-red-200'
+          }`}>
             {message.text}
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Sidebar - Aperçu */}
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow p-6 sticky top-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Aperçu</h3>
+        {/* Tabs */}
+        <div className="flex gap-2 mb-6 bg-white p-2 rounded-xl shadow">
+          {[
+            { id: 'branding', label: '🎨 Apparence', icon: '🎨' },
+            { id: 'texts', label: '✏️ Textes', icon: '✏️' },
+            { id: 'email', label: '📧 Email', icon: '📧' },
+            { id: 'export', label: '🚀 Exporter', icon: '🚀' },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              data-tab={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex-1 px-4 py-3 rounded-lg font-semibold transition-all ${
+                activeTab === tab.id
+                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg'
+                  : 'text-gray-600 hover:bg-gray-100'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
 
-              <div
-                className="border-2 rounded-lg p-4 mb-4"
-                style={{
-                  borderColor: config.branding.primaryColor,
-                  backgroundColor: `${config.branding.primaryColor}10`,
-                }}
-              >
-                <h4
-                  className="font-bold text-lg mb-2"
-                  style={{ color: config.branding.primaryColor }}
-                >
-                  {config.branding.companyName || "Votre Entreprise"}
-                </h4>
-                <p className="text-sm text-gray-600 mb-3">
-                  {config.texts.formTitle}
-                </p>
-                <div className="space-y-2 text-xs">
-                  <div className="flex justify-between">
-                    <span>Frais de base:</span>
-                    <span className="font-semibold">
-                      {config.pricing.baseFee.toFixed(2)} €
-                    </span>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Formulaire */}
+          <div className="lg:col-span-2 space-y-6">
+            
+            {/* Tab Branding */}
+            {activeTab === 'branding' && (
+              <div className="bg-white rounded-xl shadow-lg p-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-6">🎨 Personnalisation visuelle</h3>
+
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Nom de votre entreprise
+                    </label>
+                    <input
+                      type="text"
+                      value={config.branding.companyName}
+                      onChange={(e) => handleChange('branding', 'companyName', e.target.value)}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="VTC Premium Paris"
+                    />
                   </div>
-                  <div className="flex justify-between">
-                    <span>Berline:</span>
-                    <span className="font-semibold">
-                      {config.pricing.pricePerKm.berline.toFixed(2)} €/km
-                    </span>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      URL du logo (optionnel)
+                    </label>
+                    <input
+                      type="url"
+                      value={config.branding.logo}
+                      onChange={(e) => handleChange('branding', 'logo', e.target.value)}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                      placeholder="https://exemple.com/mon-logo.png"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">Taille recommandée : 200x60 pixels</p>
                   </div>
-                  <div className="flex justify-between">
-                    <span>Van:</span>
-                    <span className="font-semibold">
-                      {config.pricing.pricePerKm.van.toFixed(2)} €/km
-                    </span>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Couleur principale
+                      </label>
+                      <div className="flex gap-2 items-center">
+                        <div 
+                          className="w-14 h-14 rounded-xl border-4 border-white shadow-lg cursor-pointer relative overflow-hidden"
+                          style={{ backgroundColor: config.branding.primaryColor }}
+                        >
+                          <input
+                            type="color"
+                            value={config.branding.primaryColor}
+                            onChange={(e) => handleChange('branding', 'primaryColor', e.target.value)}
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                          />
+                        </div>
+                        <input
+                          type="text"
+                          value={config.branding.primaryColor}
+                          onChange={(e) => handleChange('branding', 'primaryColor', e.target.value)}
+                          className="flex-1 px-3 py-2 border-2 border-gray-200 rounded-lg text-sm font-mono uppercase"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Couleur secondaire
+                      </label>
+                      <div className="flex gap-2 items-center">
+                        <div 
+                          className="w-14 h-14 rounded-xl border-4 border-gray-200 shadow-lg cursor-pointer relative overflow-hidden"
+                          style={{ backgroundColor: config.branding.secondaryColor }}
+                        >
+                          <input
+                            type="color"
+                            value={config.branding.secondaryColor}
+                            onChange={(e) => handleChange('branding', 'secondaryColor', e.target.value)}
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                          />
+                        </div>
+                        <input
+                          type="text"
+                          value={config.branding.secondaryColor}
+                          onChange={(e) => handleChange('branding', 'secondaryColor', e.target.value)}
+                          className="flex-1 px-3 py-2 border-2 border-gray-200 rounded-lg text-sm font-mono uppercase"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Couleur d'accent
+                      </label>
+                      <div className="flex gap-2 items-center">
+                        <div 
+                          className="w-14 h-14 rounded-xl border-4 border-white shadow-lg cursor-pointer relative overflow-hidden"
+                          style={{ backgroundColor: config.branding.accentColor }}
+                        >
+                          <input
+                            type="color"
+                            value={config.branding.accentColor}
+                            onChange={(e) => handleChange('branding', 'accentColor', e.target.value)}
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                          />
+                        </div>
+                        <input
+                          type="text"
+                          value={config.branding.accentColor}
+                          onChange={(e) => handleChange('branding', 'accentColor', e.target.value)}
+                          className="flex-1 px-3 py-2 border-2 border-gray-200 rounded-lg text-sm font-mono uppercase"
+                        />
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex justify-between">
-                    <span>Prestige:</span>
-                    <span className="font-semibold">
-                      {config.pricing.pricePerKm.prestige.toFixed(2)} €/km
-                    </span>
+
+                  {/* Palettes prédéfinies */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-3">
+                      Palettes suggérées
+                    </label>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                      {[
+                        { name: 'Bleu Pro', primaryColor: '#2563eb', secondaryColor: '#ffffff', accentColor: '#3b82f6' },
+                        { name: 'Noir Luxe', primaryColor: '#1f2937', secondaryColor: '#ffffff', accentColor: '#6b7280' },
+                        { name: 'Vert Nature', primaryColor: '#059669', secondaryColor: '#ffffff', accentColor: '#10b981' },
+                        { name: 'Violet Élégant', primaryColor: '#7c3aed', secondaryColor: '#ffffff', accentColor: '#8b5cf6' },
+                        { name: 'Rouge Passion', primaryColor: '#dc2626', secondaryColor: '#ffffff', accentColor: '#ef4444' },
+                        { name: 'Or Premium', primaryColor: '#b45309', secondaryColor: '#fffbeb', accentColor: '#f59e0b' },
+                        { name: 'Rose Moderne', primaryColor: '#db2777', secondaryColor: '#ffffff', accentColor: '#ec4899' },
+                        { name: 'Cyan Tech', primaryColor: '#0891b2', secondaryColor: '#ffffff', accentColor: '#06b6d4' },
+                      ].map((palette) => (
+                        <button
+                          key={palette.name}
+                          type="button"
+                          onClick={() => {
+                            setConfig(prev => ({
+                              ...prev,
+                              branding: { 
+                                ...prev.branding, 
+                                primaryColor: palette.primaryColor,
+                                secondaryColor: palette.secondaryColor,
+                                accentColor: palette.accentColor,
+                              }
+                            }));
+                          }}
+                          className="p-3 rounded-xl border-2 border-gray-200 hover:border-blue-400 hover:shadow-md transition-all text-left"
+                        >
+                          <div className="flex gap-1 mb-2">
+                            <div className="w-8 h-8 rounded-lg shadow-sm" style={{ backgroundColor: palette.primaryColor }}></div>
+                            <div className="w-8 h-8 rounded-lg shadow-sm border border-gray-200" style={{ backgroundColor: palette.secondaryColor }}></div>
+                            <div className="w-8 h-8 rounded-lg shadow-sm" style={{ backgroundColor: palette.accentColor }}></div>
+                          </div>
+                          <span className="text-xs font-semibold text-gray-700">{palette.name}</span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
+            )}
 
+            {/* Tab Textes */}
+            {activeTab === 'texts' && (
+              <div className="bg-white rounded-xl shadow-lg p-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-6">✏️ Textes personnalisables</h3>
+
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Titre du formulaire
+                    </label>
+                    <input
+                      type="text"
+                      value={config.texts.formTitle}
+                      onChange={(e) => handleChange('texts', 'formTitle', e.target.value)}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                      placeholder="Réservation VTC"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Sous-titre
+                    </label>
+                    <input
+                      type="text"
+                      value={config.texts.formSubtitle}
+                      onChange={(e) => handleChange('texts', 'formSubtitle', e.target.value)}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                      placeholder="Calculez votre prix et réservez en quelques clics"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Texte du bouton de réservation
+                    </label>
+                    <input
+                      type="text"
+                      value={config.texts.submitButton}
+                      onChange={(e) => handleChange('texts', 'submitButton', e.target.value)}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                      placeholder="Réserver & Confirmer le Prix"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Tab Email */}
+            {activeTab === 'email' && (
+              <div className="bg-white rounded-xl shadow-lg p-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-6">📧 Notifications Email</h3>
+
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Votre email (où recevoir les réservations) *
+                    </label>
+                    <input
+                      type="email"
+                      value={config.email.adminEmail}
+                      onChange={(e) => handleChange('email', 'adminEmail', e.target.value)}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                      placeholder="contact@votre-vtc.com"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      💡 Les réservations seront envoyées automatiquement à cette adresse
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Nom de l'expéditeur
+                    </label>
+                    <input
+                      type="text"
+                      value={config.email.fromName}
+                      onChange={(e) => handleChange('email', 'fromName', e.target.value)}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                      placeholder="VTC Premium"
+                    />
+                  </div>
+
+                  <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl">
+                    <p className="text-sm text-blue-800">
+                      ℹ️ <strong>Pas de configuration technique nécessaire !</strong><br />
+                      Nous gérons l'envoi des emails pour vous. Vous recevrez automatiquement une notification à chaque nouvelle réservation.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Tab Export */}
+            {activeTab === 'export' && (
+              <div className="space-y-6">
+                {/* Lien direct */}
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                  <h3 className="text-xl font-bold text-gray-900 mb-4">🔗 Lien direct</h3>
+                  <p className="text-gray-600 mb-4">Partagez ce lien pour permettre à vos clients de réserver directement.</p>
+                  
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      readOnly
+                      value={getWidgetUrl()}
+                      className="flex-1 px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl font-mono text-sm"
+                    />
+                    <button
+                      onClick={() => copyToClipboard(getWidgetUrl())}
+                      className="px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors"
+                    >
+                      {copied ? '✓ Copié !' : '📋 Copier'}
+                    </button>
+                  </div>
+
+                  <a
+                    href={getWidgetUrl()}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 mt-4 text-blue-600 hover:text-blue-700 font-medium"
+                  >
+                    🔗 Ouvrir dans un nouvel onglet →
+                  </a>
+                </div>
+
+                {/* iFrame */}
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                  <h3 className="text-xl font-bold text-gray-900 mb-4">📦 Code iFrame</h3>
+                  <p className="text-gray-600 mb-4">Intégrez ce code sur votre site WordPress, Wix, ou HTML.</p>
+                  
+                  <div className="relative">
+                    <pre className="p-4 bg-gray-900 text-green-400 rounded-xl text-sm overflow-x-auto">
+                      {getIframeCode()}
+                    </pre>
+                    <button
+                      onClick={() => copyToClipboard(getIframeCode())}
+                      className="absolute top-2 right-2 px-3 py-1 bg-gray-700 text-white rounded-lg text-sm hover:bg-gray-600"
+                    >
+                      {copied ? '✓ Copié !' : 'Copier'}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Instructions */}
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
+                  <h4 className="font-bold text-blue-900 mb-3">💡 Comment intégrer sur votre site ?</h4>
+                  <ul className="space-y-2 text-sm text-blue-800">
+                    <li><strong>WordPress :</strong> Ajoutez un bloc "HTML personnalisé" et collez le code iFrame</li>
+                    <li><strong>Wix :</strong> Utilisez l'élément "Embed HTML" dans l'éditeur</li>
+                    <li><strong>Squarespace :</strong> Ajoutez un bloc "Code" dans votre page</li>
+                    <li><strong>Site HTML :</strong> Collez directement le code dans votre fichier HTML</li>
+                  </ul>
+                </div>
+              </div>
+            )}
+
+            {/* Bouton Sauvegarder */}
+            {activeTab !== 'export' && (
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+                className="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold text-lg hover:shadow-xl transition-all disabled:opacity-50"
               >
-                {saving
-                  ? "Enregistrement..."
-                  : "💾 Enregistrer la configuration"}
+                {saving ? '⏳ Enregistrement...' : '💾 Enregistrer les modifications'}
               </button>
+            )}
+          </div>
 
-              {currentWidget && (
-                <div className="mt-4 pt-4 border-t">
-                  <p className="text-xs text-gray-500 mb-2">ID du widget:</p>
-                  <code className="text-xs bg-gray-100 p-2 rounded block break-all">
-                    {currentWidget.id}
-                  </code>
+          {/* Aperçu RÉEL en iframe */}
+          <div className="lg:col-span-1">
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden sticky top-6">
+              <div className="p-4 border-b border-gray-200 bg-gray-50">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-bold text-gray-900">👁️ Aperçu en direct</h3>
+                  {currentWidget && (
+                    <a
+                      href={`/widget/${currentWidget.id}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
+                    >
+                      Ouvrir ↗
+                    </a>
+                  )}
+                </div>
+                <p className="text-xs text-gray-500 mt-1">
+                  ⚠️ Sauvegardez pour voir les changements
+                </p>
+              </div>
+              
+              {/* iframe du vrai formulaire */}
+              {currentWidget ? (
+                <div className="relative bg-gray-100" style={{ height: '600px' }}>
+                  <iframe
+                    key={iframeKey}
+                    src={`/widget/${currentWidget.id}`}
+                    className="w-full h-full border-0"
+                    title="Aperçu du formulaire"
+                  />
+                </div>
+              ) : (
+                <div className="p-8 text-center text-gray-500">
+                  <p>Chargement de l'aperçu...</p>
                 </div>
               )}
             </div>
-          </div>
-
-          {/* Main Content - Formulaire */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Branding */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">
-                🎨 Branding
-              </h3>
-
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Nom de l'entreprise
-                  </label>
-                  <input
-                    type="text"
-                    value={config.branding.companyName}
-                    onChange={(e) =>
-                      handleChange("branding", "companyName", e.target.value)
-                    }
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    placeholder="VTC Premium"
-                  />
-                </div>
-
-                <div className="grid grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Couleur principale
-                    </label>
-                    <input
-                      type="color"
-                      value={config.branding.primaryColor}
-                      onChange={(e) =>
-                        handleChange("branding", "primaryColor", e.target.value)
-                      }
-                      className="w-full h-10 rounded-lg cursor-pointer"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Couleur secondaire
-                    </label>
-                    <input
-                      type="color"
-                      value={config.branding.secondaryColor}
-                      onChange={(e) =>
-                        handleChange(
-                          "branding",
-                          "secondaryColor",
-                          e.target.value
-                        )
-                      }
-                      className="w-full h-10 rounded-lg cursor-pointer"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Couleur accent
-                    </label>
-                    <input
-                      type="color"
-                      value={config.branding.accentColor}
-                      onChange={(e) =>
-                        handleChange("branding", "accentColor", e.target.value)
-                      }
-                      className="w-full h-10 rounded-lg cursor-pointer"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Tarifs */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">
-                💰 Tarifs
-              </h3>
-
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Frais de base (€)
-                  </label>
-                  <input
-                    type="number"
-                    step="0.1"
-                    value={config.pricing.baseFee}
-                    onChange={(e) =>
-                      handleChange(
-                        "pricing",
-                        "baseFee",
-                        parseFloat(e.target.value)
-                      )
-                    }
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div className="grid grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Berline (€/km)
-                    </label>
-                    <input
-                      type="number"
-                      step="0.1"
-                      value={config.pricing.pricePerKm.berline}
-                      onChange={(e) =>
-                        handleNestedChange(
-                          "pricing",
-                          "pricePerKm",
-                          "berline",
-                          parseFloat(e.target.value)
-                        )
-                      }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Van (€/km)
-                    </label>
-                    <input
-                      type="number"
-                      step="0.1"
-                      value={config.pricing.pricePerKm.van}
-                      onChange={(e) =>
-                        handleNestedChange(
-                          "pricing",
-                          "pricePerKm",
-                          "van",
-                          parseFloat(e.target.value)
-                        )
-                      }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Prestige (€/km)
-                    </label>
-                    <input
-                      type="number"
-                      step="0.1"
-                      value={config.pricing.pricePerKm.prestige}
-                      onChange={(e) =>
-                        handleNestedChange(
-                          "pricing",
-                          "pricePerKm",
-                          "prestige",
-                          parseFloat(e.target.value)
-                        )
-                      }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Bagage supplémentaire (€)
-                    </label>
-                    <input
-                      type="number"
-                      step="0.1"
-                      value={config.pricing.supplements.extraLuggage}
-                      onChange={(e) =>
-                        handleNestedChange(
-                          "pricing",
-                          "supplements",
-                          "extraLuggage",
-                          parseFloat(e.target.value)
-                        )
-                      }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Supplément nuit (€)
-                    </label>
-                    <input
-                      type="number"
-                      step="0.1"
-                      value={config.pricing.supplements.nightSurcharge}
-                      onChange={(e) =>
-                        handleNestedChange(
-                          "pricing",
-                          "supplements",
-                          "nightSurcharge",
-                          parseFloat(e.target.value)
-                        )
-                      }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Email */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">
-                📧 Notifications Email
-              </h3>
-
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Votre email (où recevoir les réservations) *
-                  </label>
-                  <input
-                    type="email"
-                    value={config.email?.adminEmail || ""}
-                    onChange={(e) =>
-                      handleChange("email", "adminEmail", e.target.value)
-                    }
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    placeholder="votre-email@exemple.com"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                    💡 Les réservations seront envoyées automatiquement à cette
-                    adresse
-                  </p>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Nom de votre entreprise (apparaîtra dans l'email)
-                  </label>
-                  <input
-                    type="text"
-                    value={
-                      config.email?.fromName ||
-                      config.branding?.companyName ||
-                      ""
-                    }
-                    onChange={(e) =>
-                      handleChange("email", "fromName", e.target.value)
-                    }
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    placeholder="VTC Premium"
-                  />
-                </div>
-
-                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                  <p className="text-sm text-blue-800">
-                    ℹ️{" "}
-                    <strong>Pas de configuration technique nécessaire !</strong>
-                    <br />
-                    Nous gérons l'envoi des emails pour vous. Vous recevrez
-                    automatiquement une notification à chaque nouvelle
-                    réservation.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Textes */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">
-                ✏️ Textes personnalisables
-              </h3>
-
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Titre du formulaire
-                  </label>
-                  <input
-                    type="text"
-                    value={config.texts.formTitle}
-                    onChange={(e) =>
-                      handleChange("texts", "formTitle", e.target.value)
-                    }
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Sous-titre
-                  </label>
-                  <input
-                    type="text"
-                    value={config.texts.formSubtitle}
-                    onChange={(e) =>
-                      handleChange("texts", "formSubtitle", e.target.value)
-                    }
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Texte du bouton de soumission
-                  </label>
-                  <input
-                    type="text"
-                    value={config.texts.submitButton}
-                    onChange={(e) =>
-                      handleChange("texts", "submitButton", e.target.value)
-                    }
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Bouton de sauvegarde en bas aussi */}
-            <button
-              onClick={handleSave}
-              disabled={saving}
-              className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
-            >
-              {saving ? "Enregistrement..." : "💾 Enregistrer la configuration"}
-            </button>
           </div>
         </div>
       </main>

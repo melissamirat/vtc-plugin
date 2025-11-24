@@ -1,72 +1,90 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 export default function LandingPage() {
   const router = useRouter();
   const [activeFaq, setActiveFaq] = useState(null);
+  const [isVisible, setIsVisible] = useState({});
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible((prev) => ({ ...prev, [entry.target.id]: true }));
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    document.querySelectorAll('[data-animate]').forEach((el) => {
+      observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   const features = [
     {
+      icon: "⚡",
+      title: "Installation Express",
+      description: "Widget pret en 120 secondes. Copier-coller, c est tout."
+    },
+    {
       icon: "🎨",
       title: "100% Personnalisable",
-      description: "Adaptez les couleurs, tarifs et textes à votre marque en quelques clics"
-    },
-    {
-      icon: "⚡",
-      title: "Installation Instantanée",
-      description: "Copiez-collez un code sur votre site. Prêt en 2 minutes chrono."
-    },
-    {
-      icon: "📧",
-      title: "Notifications Automatiques",
-      description: "Recevez chaque réservation par email en temps réel"
+      description: "Couleurs, tarifs, textes adaptes a votre identite"
     },
     {
       icon: "📱",
       title: "Mobile-First",
-      description: "Interface parfaite sur tous les appareils, du mobile au desktop"
+      description: "Experience parfaite sur tous les appareils"
     },
     {
       icon: "💰",
       title: "Tarification Intelligente",
-      description: "Calcul automatique basé sur la distance réelle, avec suppléments"
+      description: "Calcul automatique distance reelle + supplements"
+    },
+    {
+      icon: "📧",
+      title: "Notifications Instantanees",
+      description: "Chaque reservation arrive en temps reel"
     },
     {
       icon: "🔒",
-      title: "Sécurisé & Fiable",
-      description: "Infrastructure Firebase, disponibilité 99.9%, vos données protégées"
+      title: "Securite Enterprise",
+      description: "Infrastructure Firebase 99.9% uptime"
     },
   ];
 
   const plans = [
     {
-      name: "Basic",
+      name: "Starter",
       price: "19",
       popular: false,
       features: [
         "1 site web",
-        "100 réservations / mois",
+        "100 reservations/mois",
         "Emails automatiques",
-        "Personnalisation complète",
-        "Support par email",
-        "Calcul de prix en temps réel"
+        "Personnalisation complete",
+        "Support email"
       ]
     },
     {
-      name: "Pro",
+      name: "Professional",
       price: "39",
       popular: true,
       features: [
         "3 sites web",
-        "Réservations illimitées",
+        "Reservations illimitees",
         "Emails + SMS",
-        "Paiement Stripe intégré",
+        "Paiement Stripe",
         "Support prioritaire",
-        "Statistiques avancées",
-        "Export CSV"
+        "Analytics avancees"
       ]
     },
     {
@@ -74,161 +92,195 @@ export default function LandingPage() {
       price: "79",
       popular: false,
       features: [
-        "Sites illimités",
-        "Réservations illimitées",
+        "Sites illimites",
+        "Reservations illimitees",
         "White-label complet",
-        "API REST complète",
-        "Support téléphone 24/7",
-        "Intégrations Zapier",
-        "Manager d'équipe"
+        "API REST",
+        "Support 24/7",
+        "Manager equipe"
       ]
     }
   ];
 
   const faqs = [
     {
-      q: "Comment ça fonctionne exactement ?",
-      a: "Vous créez un compte, configurez votre widget (couleurs, tarifs), puis copiez un simple code à ajouter sur votre site. C'est tout ! Les réservations arrivent automatiquement par email."
+      q: "Comment fonctionne l installation ?",
+      a: "Inscrivez-vous, configurez votre widget, copiez le code et collez-le sur votre site. 2 minutes chrono."
     },
     {
-      q: "Fonctionne avec WordPress, Wix, Shopify ?",
-      a: "Oui ! Notre widget fonctionne sur n'importe quel site web : WordPress, Wix, Shopify, Squarespace, site HTML... Si vous pouvez coller du code, ça marche."
+      q: "Compatible avec mon site ?",
+      a: "Oui. WordPress, Wix, Shopify, HTML... Si vous pouvez coller du code, ca marche."
     },
     {
-      q: "Y a-t-il des frais cachés ?",
-      a: "Non. Le prix affiché est le prix final. Pas de frais de setup, pas de commission sur les réservations. Vous payez juste l'abonnement mensuel."
+      q: "Y a-t-il des frais caches ?",
+      a: "Non. Prix affiche = prix final. Pas de setup, pas de commission sur reservations."
     },
     {
-      q: "Puis-je changer de plan plus tard ?",
-      a: "Absolument ! Vous pouvez passer à un plan supérieur ou inférieur à tout moment. Le changement est immédiat."
-    },
-    {
-      q: "Les clients peuvent-ils payer directement ?",
-      a: "Oui, sur les plans Pro et Enterprise, vous pouvez activer le paiement Stripe pour encaisser directement les acomptes ou paiements complets."
-    },
-    {
-      q: "Que se passe-t-il si j'annule ?",
-      a: "Vous pouvez annuler à tout moment. Votre widget restera actif jusqu'à la fin de la période payée. Aucun engagement, aucune pénalité."
+      q: "Puis-je changer de plan ?",
+      a: "Oui, upgrade ou downgrade quand vous voulez. Changement immediat."
     }
   ];
 
-  const stats = [
-    { number: "2 min", label: "Installation" },
-    { number: "99.9%", label: "Disponibilité" },
-    { number: "24/7", label: "Support" },
-    { number: "0€", label: "Commission" }
-  ];
-
   return (
-    <div className="min-h-screen bg-white">
+    <div className="bg-[#FBF8F3]">
       
-      {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-white border-b shadow-sm">
+      {/* Navigation fixe */}
+      <nav className="fixed top-0 w-full z-50 bg-[#2C2420]/95 backdrop-blur-md border-b border-[#8B7355]/20 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <span className="text-2xl font-bold text-blue-600">🚗 VTC Widget Pro</span>
+          <div className="flex justify-between items-center h-16 sm:h-20">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-[#D4A574] to-[#8B7355] rounded-xl flex items-center justify-center shadow-lg">
+                <span className="text-white text-xl font-bold">V</span>
+              </div>
+              <span className="text-xl sm:text-2xl font-bold text-[#FBF8F3]">VTC Widget Pro</span>
             </div>
-            <div className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-gray-600 hover:text-blue-600 transition">Fonctionnalités</a>
-              <a href="#pricing" className="text-gray-600 hover:text-blue-600 transition">Tarifs</a>
-              <a href="#faq" className="text-gray-600 hover:text-blue-600 transition">FAQ</a>
-              <Link href="/auth/login" className="text-gray-600 hover:text-blue-600 transition">
+            <div className="hidden md:flex items-center gap-8">
+              <a href="#features" className="text-[#E8DCC4] hover:text-[#D4A574] transition font-medium">Fonctionnalites</a>
+              <a href="#pricing" className="text-[#E8DCC4] hover:text-[#D4A574] transition font-medium">Tarifs</a>
+              <a href="#faq" className="text-[#E8DCC4] hover:text-[#D4A574] transition font-medium">FAQ</a>
+              <Link href="/auth/login" className="text-[#E8DCC4] hover:text-[#D4A574] transition font-medium">
                 Connexion
               </Link>
               <Link 
                 href="/auth/register"
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+                className="px-6 py-2.5 bg-gradient-to-r from-[#D4A574] to-[#8B7355] text-white rounded-full hover:shadow-xl transition-all duration-300 font-semibold hover:scale-105"
               >
-                Commencer gratuitement
+                Demarrer
+              </Link>
+            </div>
+            <div className="md:hidden">
+              <Link 
+                href="/auth/register"
+                className="px-4 py-2 bg-gradient-to-r from-[#D4A574] to-[#8B7355] text-white rounded-full text-sm font-semibold"
+              >
+                Demarrer
               </Link>
             </div>
           </div>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-indigo-50 py-20 px-4">
-        <div className="max-w-7xl mx-auto">
+      {/* Hero Section avec animation */}
+      <section className="relative pt-32 sm:pt-40 pb-20 sm:pb-32 px-4 overflow-hidden bg-gradient-to-br from-[#2C2420] via-[#3D3330] to-[#2C2420]">
+        {/* Effet de grille subtil */}
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyMTIsMTY1LDExNiwwLjA1KSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-30"></div>
+        
+        <div className="max-w-7xl mx-auto relative">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             
-            {/* Left - Text */}
-            <div>
-              <div className="inline-block mb-4 px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold">
-                ✨ Le widget VTC le plus simple du marché
+            <div 
+              id="hero-text"
+              data-animate
+              className={`transition-all duration-1000 ${isVisible['hero-text'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+            >
+              <div className="inline-block mb-6 px-4 py-2 bg-[#D4A574]/20 border border-[#D4A574]/30 rounded-full">
+                <span className="text-[#D4A574] text-sm font-semibold">Widget VTC Premium</span>
               </div>
               
-              <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#FBF8F3] mb-6 leading-tight">
                 Transformez votre site en
-                <span className="text-blue-600"> machine à réservations</span>
+                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-[#D4A574] to-[#C4956C] mt-2">
+                  machine a reservations
+                </span>
               </h1>
               
-              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-                Ajoutez un formulaire de réservation professionnel sur votre site en 2 minutes. 
-                Calcul automatique des prix, emails instantanés, 100% personnalisable.
+              <p className="text-lg sm:text-xl text-[#E8DCC4] mb-8 leading-relaxed">
+                Widget professionnel integrable en 2 minutes. Calcul automatique, emails instantanes, 100% personnalisable.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 mb-8">
                 <Link 
                   href="/auth/register"
-                  className="px-8 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-bold text-lg shadow-lg hover:shadow-xl transform hover:scale-105"
+                  className="group px-8 py-4 bg-gradient-to-r from-[#D4A574] to-[#8B7355] text-white rounded-full font-bold text-lg shadow-2xl hover:shadow-[#D4A574]/50 transition-all duration-300 hover:scale-105 text-center"
                 >
-                  🚀 Essayer gratuitement
+                  <span className="flex items-center justify-center gap-2">
+                    Commencer gratuitement
+                    <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                    </svg>
+                  </span>
                 </Link>
                 <a 
                   href="#demo"
-                  className="px-8 py-4 bg-white border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition font-bold text-lg"
+                  className="px-8 py-4 bg-transparent border-2 border-[#D4A574] text-[#D4A574] rounded-full font-bold text-lg hover:bg-[#D4A574]/10 transition-all text-center"
                 >
-                  👀 Voir la démo
+                  Voir la demo
                 </a>
               </div>
 
-              <div className="flex items-center gap-8 text-sm text-gray-500">
+              <div className="flex flex-wrap items-center gap-6 text-sm text-[#E8DCC4]">
                 <div className="flex items-center gap-2">
-                  <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-5 h-5 text-[#D4A574]" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
                   </svg>
                   <span>Sans engagement</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-5 h-5 text-[#D4A574]" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
                   </svg>
-                  <span>Installation en 2 min</span>
+                  <span>Setup en 2 min</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <svg className="w-5 h-5 text-[#D4A574]" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
+                  </svg>
+                  <span>Support inclus</span>
                 </div>
               </div>
             </div>
 
-            {/* Right - Mockup / Image */}
-            <div className="relative">
-              <div className="relative bg-white rounded-2xl shadow-2xl p-8 transform rotate-2 hover:rotate-0 transition-transform duration-300">
-                <div className="absolute -top-4 -right-4 bg-green-500 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg">
-                  ✓ En ligne
-                </div>
-                <img 
-                  src="/api/placeholder/600/400" 
-                  alt="Widget VTC Preview" 
-                  className="rounded-lg w-full"
-                />
-                <div className="mt-4 flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                  <div>
-                    <p className="text-sm text-gray-500">Dernière réservation</p>
-                    <p className="font-bold text-gray-900">Il y a 2 minutes</p>
+            <div 
+              id="hero-image"
+              data-animate
+              className={`transition-all duration-1000 delay-300 ${isVisible['hero-image'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+            >
+              <div className="relative">
+                <div className="absolute -inset-4 bg-gradient-to-r from-[#D4A574] to-[#8B7355] rounded-3xl blur-2xl opacity-20 animate-pulse"></div>
+                <div className="relative bg-[#FBF8F3] rounded-2xl shadow-2xl p-6 border border-[#D4A574]/20">
+                  <div className="aspect-video bg-gradient-to-br from-[#2C2420] to-[#3D3330] rounded-xl flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="w-20 h-20 bg-gradient-to-br from-[#D4A574] to-[#8B7355] rounded-full flex items-center justify-center mx-auto mb-4 shadow-xl">
+                        <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                        </svg>
+                      </div>
+                      <p className="text-[#FBF8F3] font-semibold">Widget VTC</p>
+                      <p className="text-[#8B7355] text-sm">Pret a integrer</p>
+                    </div>
                   </div>
-                  <div className="text-3xl font-bold text-blue-600">42€</div>
+                  <div className="mt-4 flex items-center justify-between p-4 bg-[#2C2420] rounded-lg">
+                    <div>
+                      <p className="text-xs text-[#8B7355]">Derniere reservation</p>
+                      <p className="font-bold text-[#FBF8F3]">Il y a 2 minutes</p>
+                    </div>
+                    <div className="text-3xl font-bold text-[#D4A574]">42 euros</div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+      </section>
 
-        {/* Stats Bar */}
-        <div className="max-w-7xl mx-auto mt-20">
+      {/* Stats Bar */}
+      <section className="py-12 sm:py-16 bg-[#2C2420] border-y border-[#8B7355]/20">
+        <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="text-4xl font-bold text-blue-600 mb-2">{stat.number}</div>
-                <div className="text-gray-600">{stat.label}</div>
+            {[
+              { number: "2 min", label: "Installation" },
+              { number: "99.9%", label: "Disponibilite" },
+              { number: "24/7", label: "Support" },
+              { number: "0 euro", label: "Commission" }
+            ].map((stat, index) => (
+              <div 
+                key={index}
+                id={`stat-${index}`}
+                data-animate
+                className={`text-center transition-all duration-700 delay-${index * 100} ${isVisible[`stat-${index}`] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+              >
+                <div className="text-3xl sm:text-4xl font-bold text-[#D4A574] mb-2">{stat.number}</div>
+                <div className="text-[#E8DCC4] text-sm sm:text-base">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -236,141 +288,107 @@ export default function LandingPage() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 px-4 bg-white">
+      <section id="features" className="py-20 sm:py-32 px-4 bg-[#FBF8F3]">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+          <div 
+            id="features-title"
+            data-animate
+            className={`text-center mb-16 transition-all duration-1000 ${isVisible['features-title'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+          >
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2C2420] mb-4">
               Tout ce dont vous avez besoin
             </h2>
-            <p className="text-xl text-gray-600">
-              Un widget complet, professionnel et facile à utiliser
+            <p className="text-lg sm:text-xl text-[#5C4F43] max-w-2xl mx-auto">
+              Un widget complet, professionnel et facile a utiliser
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {features.map((feature, index) => (
               <div 
                 key={index}
-                className="p-6 bg-white border-2 border-gray-100 rounded-xl hover:border-blue-200 hover:shadow-lg transition-all"
+                id={`feature-${index}`}
+                data-animate
+                className={`group p-6 sm:p-8 bg-white rounded-2xl border border-[#E8DCC4] hover:border-[#D4A574] hover:shadow-xl transition-all duration-500 ${isVisible[`feature-${index}`] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+                style={{ transitionDelay: `${index * 100}ms` }}
               >
-                <div className="text-4xl mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{feature.title}</h3>
-                <p className="text-gray-600">{feature.description}</p>
+                <div className="text-4xl sm:text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">{feature.icon}</div>
+                <h3 className="text-xl font-bold text-[#2C2420] mb-3 group-hover:text-[#8B7355] transition-colors">{feature.title}</h3>
+                <p className="text-[#5C4F43] leading-relaxed">{feature.description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* How it works */}
-      <section className="py-20 px-4 bg-gradient-to-br from-blue-50 to-indigo-50">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Simple comme bonjour
-            </h2>
-            <p className="text-xl text-gray-600">
-              Opérationnel en moins de 5 minutes
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="relative">
-              <div className="bg-white p-8 rounded-xl shadow-lg text-center">
-                <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">
-                  1
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Créez votre compte</h3>
-                <p className="text-gray-600">En 30 secondes. Email + mot de passe, c'est tout.</p>
-              </div>
-              <div className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2">
-                <svg className="w-8 h-8 text-blue-300" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd"/>
-                </svg>
-              </div>
-            </div>
-
-            <div className="relative">
-              <div className="bg-white p-8 rounded-xl shadow-lg text-center">
-                <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">
-                  2
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Personnalisez</h3>
-                <p className="text-gray-600">Couleurs, tarifs, textes. Tout s'adapte à votre marque.</p>
-              </div>
-              <div className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2">
-                <svg className="w-8 h-8 text-blue-300" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd"/>
-                </svg>
-              </div>
-            </div>
-
-            <div className="bg-white p-8 rounded-xl shadow-lg text-center">
-              <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">
-                3
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Intégrez</h3>
-              <p className="text-gray-600">Copiez-collez le code sur votre site. C'est fini !</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Pricing Section */}
-      <section id="pricing" className="py-20 px-4 bg-white">
+      <section id="pricing" className="py-20 sm:py-32 px-4 bg-gradient-to-br from-[#2C2420] to-[#3D3330]">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+          <div 
+            id="pricing-title"
+            data-animate
+            className={`text-center mb-16 transition-all duration-1000 ${isVisible['pricing-title'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+          >
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#FBF8F3] mb-4">
               Tarifs simples et transparents
             </h2>
-            <p className="text-xl text-gray-600">
-              Choisissez le plan qui vous correspond. Changez quand vous voulez.
+            <p className="text-lg sm:text-xl text-[#E8DCC4] max-w-2xl mx-auto">
+              Choisissez le plan qui vous correspond
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
             {plans.map((plan, index) => (
               <div 
                 key={index}
-                className={`relative p-8 rounded-2xl border-2 ${
+                id={`plan-${index}`}
+                data-animate
+                className={`relative p-6 sm:p-8 rounded-2xl border-2 transition-all duration-700 ${
                   plan.popular 
-                    ? 'border-blue-500 shadow-2xl scale-105' 
-                    : 'border-gray-200 hover:border-blue-200'
-                } transition-all`}
+                    ? 'bg-gradient-to-br from-[#D4A574] to-[#8B7355] border-[#D4A574] shadow-2xl scale-105' 
+                    : 'bg-[#FBF8F3] border-[#8B7355]/30 hover:border-[#D4A574]'
+                } ${isVisible[`plan-${index}`] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+                style={{ transitionDelay: `${index * 150}ms` }}
               >
                 {plan.popular && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <span className="bg-blue-600 text-white px-4 py-1 rounded-full text-sm font-bold">
-                      ⭐ Populaire
+                    <span className="bg-[#2C2420] text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg">
+                      Populaire
                     </span>
                   </div>
                 )}
 
                 <div className="text-center mb-8">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
+                  <h3 className={`text-2xl font-bold mb-2 ${plan.popular ? 'text-white' : 'text-[#2C2420]'}`}>
+                    {plan.name}
+                  </h3>
                   <div className="flex items-end justify-center gap-1">
-                    <span className="text-5xl font-bold text-gray-900">{plan.price}€</span>
-                    <span className="text-gray-500 mb-2">/mois</span>
+                    <span className={`text-5xl font-bold ${plan.popular ? 'text-white' : 'text-[#2C2420]'}`}>
+                      {plan.price} euros
+                    </span>
+                    <span className={`mb-2 ${plan.popular ? 'text-white/80' : 'text-[#5C4F43]'}`}>/mois</span>
                   </div>
                 </div>
 
                 <ul className="space-y-4 mb-8">
                   {plan.features.map((feature, fIndex) => (
                     <li key={fIndex} className="flex items-start gap-3">
-                      <svg className="w-6 h-6 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <svg className={`w-6 h-6 flex-shrink-0 ${plan.popular ? 'text-white' : 'text-[#8B7355]'}`} fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
                       </svg>
-                      <span className="text-gray-700">{feature}</span>
+                      <span className={plan.popular ? 'text-white' : 'text-[#5C4F43]'}>
+                        {feature}
+                      </span>
                     </li>
                   ))}
                 </ul>
 
                 <Link
                   href="/auth/register"
-                  className={`block w-full py-3 px-6 rounded-lg font-bold text-center transition ${
+                  className={`block w-full py-3 px-6 rounded-full font-bold text-center transition-all duration-300 hover:scale-105 ${
                     plan.popular
-                      ? 'bg-blue-600 text-white hover:bg-blue-700'
-                      : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                      ? 'bg-white text-[#8B7355] hover:shadow-xl'
+                      : 'bg-gradient-to-r from-[#D4A574] to-[#8B7355] text-white hover:shadow-xl'
                   }`}
                 >
                   Commencer
@@ -379,37 +397,41 @@ export default function LandingPage() {
             ))}
           </div>
 
-          <p className="text-center text-gray-500 mt-8">
-            💳 Sans engagement • Résiliez quand vous voulez • Support inclus
+          <p className="text-center text-[#E8DCC4] mt-8">
+            Sans engagement • Resiliez quand vous voulez • Support inclus
           </p>
         </div>
       </section>
 
       {/* FAQ Section */}
-      <section id="faq" className="py-20 px-4 bg-gray-50">
+      <section id="faq" className="py-20 sm:py-32 px-4 bg-[#FBF8F3]">
         <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Questions fréquentes
+          <div 
+            id="faq-title"
+            data-animate
+            className={`text-center mb-16 transition-all duration-1000 ${isVisible['faq-title'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+          >
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2C2420] mb-4">
+              Questions frequentes
             </h2>
-            <p className="text-xl text-gray-600">
-              Tout ce que vous devez savoir
-            </p>
           </div>
 
           <div className="space-y-4">
             {faqs.map((faq, index) => (
               <div 
                 key={index}
-                className="bg-white rounded-lg shadow-sm overflow-hidden"
+                id={`faq-${index}`}
+                data-animate
+                className={`bg-white rounded-xl shadow-sm border border-[#E8DCC4] overflow-hidden hover:shadow-md transition-all duration-500 ${isVisible[`faq-${index}`] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+                style={{ transitionDelay: `${index * 100}ms` }}
               >
                 <button
                   onClick={() => setActiveFaq(activeFaq === index ? null : index)}
-                  className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition"
+                  className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-[#FBF8F3] transition-colors"
                 >
-                  <span className="font-semibold text-gray-900">{faq.q}</span>
+                  <span className="font-semibold text-[#2C2420]">{faq.q}</span>
                   <svg 
-                    className={`w-5 h-5 text-gray-500 transition-transform ${activeFaq === index ? 'transform rotate-180' : ''}`}
+                    className={`w-5 h-5 text-[#8B7355] transition-transform duration-300 ${activeFaq === index ? 'rotate-180' : ''}`}
                     fill="none" 
                     stroke="currentColor" 
                     viewBox="0 0 24 24"
@@ -417,11 +439,13 @@ export default function LandingPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/>
                   </svg>
                 </button>
-                {activeFaq === index && (
-                  <div className="px-6 pb-4 text-gray-600">
+                <div 
+                  className={`overflow-hidden transition-all duration-300 ${activeFaq === index ? 'max-h-96' : 'max-h-0'}`}
+                >
+                  <div className="px-6 pb-4 text-[#5C4F43]">
                     {faq.a}
                   </div>
-                )}
+                </div>
               </div>
             ))}
           </div>
@@ -429,34 +453,40 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Final */}
-      <section className="py-20 px-4 bg-gradient-to-r from-blue-600 to-indigo-600">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Prêt à booster vos réservations ?
+      <section className="py-20 sm:py-32 px-4 bg-gradient-to-r from-[#2C2420] via-[#3D3330] to-[#2C2420] relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyMTIsMTY1LDExNiwwLjA1KSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-30"></div>
+        
+        <div 
+          id="cta"
+          data-animate
+          className={`max-w-4xl mx-auto text-center relative z-10 transition-all duration-1000 ${isVisible['cta'] ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
+        >
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#FBF8F3] mb-6">
+            Pret a booster vos reservations ?
           </h2>
-          <p className="text-xl text-blue-100 mb-8">
-            Rejoignez les chauffeurs VTC qui ont déjà simplifié leur vie
+          <p className="text-lg sm:text-xl text-[#E8DCC4] mb-8 max-w-2xl mx-auto">
+            Rejoignez les professionnels VTC qui ont simplifie leur activite
           </p>
           <Link
             href="/auth/register"
-            className="inline-block px-8 py-4 bg-white text-blue-600 rounded-lg hover:bg-gray-100 transition font-bold text-lg shadow-xl"
+            className="inline-block px-8 py-4 bg-gradient-to-r from-[#D4A574] to-[#8B7355] text-white rounded-full font-bold text-lg shadow-2xl hover:shadow-[#D4A574]/50 transition-all duration-300 hover:scale-105"
           >
-            🚀 Commencer gratuitement maintenant
+            Commencer gratuitement maintenant
           </Link>
-          <p className="text-blue-100 mt-4 text-sm">
+          <p className="text-[#E8DCC4] mt-6 text-sm">
             Installation en 2 minutes • Sans engagement • Support inclus
           </p>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-gray-400 py-12 px-4">
+      <footer className="bg-[#1A1512] text-[#8B7355] py-12 px-4">
         <div className="max-w-7xl mx-auto text-center">
-          <p className="mb-4">© 2024 VTC Widget Pro. Tous droits réservés.</p>
-          <div className="flex justify-center gap-6">
-            <a href="#" className="hover:text-white transition">CGV</a>
-            <a href="#" className="hover:text-white transition">Confidentialité</a>
-            <a href="#" className="hover:text-white transition">Contact</a>
+          <p className="mb-4">2024 VTC Widget Pro. Tous droits reserves.</p>
+          <div className="flex justify-center gap-6 text-sm">
+            <a href="#" className="hover:text-[#D4A574] transition">CGV</a>
+            <a href="#" className="hover:text-[#D4A574] transition">Confidentialite</a>
+            <a href="#" className="hover:text-[#D4A574] transition">Contact</a>
           </div>
         </div>
       </footer>

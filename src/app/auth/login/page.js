@@ -42,27 +42,33 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4 py-8">
-      <div className="max-w-md w-full">
-        {/* Bouton retour */}
-        <button
-          onClick={() => router.push("/")}
-          className="mb-4 flex items-center text-blue-600 hover:text-blue-700 font-medium transition"
-        >
-          <svg
-            className="w-5 h-5 mr-2"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
+        {/* Bouton retour centré */}
+        <div className="absolute top-6 left-6">
+          <button
+            onClick={() => router.push("/")}
+            className="group flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105 border border-blue-100"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M10 19l-7-7m0 0l7-7m-7 7h18"
-            ></path>
-          </svg>
-          Retour à l accueil
-        </button>
+            <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center group-hover:rotate-[-360deg] transition-transform duration-500">
+              <svg
+                className="w-4 h-4 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2.5"
+                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                ></path>
+              </svg>
+            </div>
+            <span className="font-semibold text-gray-700 group-hover:text-blue-600 transition-colors pr-2">
+              Accueil
+            </span>
+          </button>
+        </div>
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Connexion</h1>
           <p className="text-gray-600">Accédez à votre tableau de bord</p>
