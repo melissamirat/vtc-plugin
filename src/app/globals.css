@@ -1,8 +1,38 @@
 @import "tailwindcss";
 
+/* ============================================
+   PALETTE DE COULEURS - MARRON/BLANC/NOIR
+   ============================================ */
 :root {
+  /* Couleurs principales */
+  --color-primary: #5D4037;
+  --color-primary-dark: #4E342E;
+  --color-primary-light: #795548;
+  
+  /* Couleurs de fond */
   --background: #ffffff;
-  --foreground: #171717;
+  --background-secondary: #fafaf9;
+  --background-tertiary: #f5f5f4;
+  
+  /* Couleurs de texte */
+  --foreground: #1c1917;
+  --text-primary: #1c1917;
+  --text-secondary: #44403c;
+  --text-muted: #78716c;
+  --text-light: #a8a29e;
+  
+  /* Couleurs de bordure */
+  --border-color: #e7e5e4;
+  --border-dark: #d6d3d1;
+  
+  /* Couleurs de statut */
+  --color-success: #059669;
+  --color-warning: #d97706;
+  --color-error: #dc2626;
+  
+  /* Accents marron */
+  --accent-light: #efebe9;
+  --accent-medium: #d7ccc8;
 }
 
 @theme inline {
@@ -12,15 +42,90 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* ============================================
+   STYLES DE BASE
+   ============================================ */
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+/* Empêcher le zoom sur les inputs en iOS */
+@media screen and (max-width: 768px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="password"],
+  input[type="date"],
+  input[type="time"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Touch targets minimum 44px sur mobile */
+@media screen and (max-width: 768px) {
+  button,
+  a,
+  [role="button"] {
+    min-height: 44px;
+  }
+}
+
+/* Désactiver le highlight bleu sur tap mobile */
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Safe area pour iPhones avec notch */
+body {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ============================================
+   OVERRIDE TAILWIND - BLEU -> MARRON
+   ============================================ */
+
+/* Gradients */
+.from-blue-500 { --tw-gradient-from: var(--color-primary-light) !important; }
+.to-blue-600 { --tw-gradient-to: var(--color-primary) !important; }
+.from-blue-600 { --tw-gradient-from: var(--color-primary) !important; }
+.to-indigo-600 { --tw-gradient-to: var(--color-primary-dark) !important; }
+.from-indigo-500 { --tw-gradient-from: var(--color-primary) !important; }
+.from-indigo-600 { --tw-gradient-from: var(--color-primary-dark) !important; }
+
+/* Backgrounds */
+.bg-blue-500 { background-color: var(--color-primary-light) !important; }
+.bg-blue-600 { background-color: var(--color-primary) !important; }
+.bg-blue-700 { background-color: var(--color-primary-dark) !important; }
+.bg-blue-100 { background-color: var(--accent-light) !important; }
+.bg-blue-50 { background-color: var(--accent-light) !important; }
+.bg-indigo-500 { background-color: var(--color-primary) !important; }
+.bg-indigo-600 { background-color: var(--color-primary-dark) !important; }
+.bg-indigo-50 { background-color: var(--accent-light) !important; }
+
+/* Text */
+.text-blue-500 { color: var(--color-primary-light) !important; }
+.text-blue-600 { color: var(--color-primary) !important; }
+.text-blue-700 { color: var(--color-primary-dark) !important; }
+
+/* Borders */
+.border-blue-500 { border-color: var(--color-primary-light) !important; }
+.border-blue-600 { border-color: var(--color-primary) !important; }
+.border-blue-200 { border-color: var(--accent-medium) !important; }
+.border-indigo-200 { border-color: var(--accent-medium) !important; }
+
+/* Hover states */
+.hover\:bg-blue-700:hover { background-color: var(--color-primary-dark) !important; }
+.hover\:text-blue-700:hover { color: var(--color-primary-dark) !important; }
+
+/* Ring */
+.ring-blue-500 { --tw-ring-color: var(--color-primary-light) !important; }
+.focus\:ring-blue-500:focus { --tw-ring-color: var(--color-primary-light) !important; }
+.focus\:border-blue-500:focus { border-color: var(--color-primary) !important; }
