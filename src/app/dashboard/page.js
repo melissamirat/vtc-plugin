@@ -2,6 +2,7 @@
 
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getUserWidgets, getUserBookings } from "@/lib/firestore";
 import SetupWizard from "@/components/SetupWizard";
@@ -276,11 +277,11 @@ export default function DashboardPage() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Stats Cards - CLIQUABLES */}
+        {/* Stats Cards - CLIQUABLES avec Link */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-8">
-          <button 
-            onClick={() => router.push('/dashboard/reservations')}
-            className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 border-l-4 border-blue-500 hover:shadow-xl transition active:scale-95 text-left w-full"
+          <Link 
+            href="/dashboard/reservations"
+            className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 border-l-4 border-blue-500 hover:shadow-xl transition active:scale-95 block"
           >
             <div className="flex items-center justify-between">
               <div>
@@ -295,11 +296,11 @@ export default function DashboardPage() {
                 <span className="text-xl sm:text-2xl">📋</span>
               </div>
             </div>
-          </button>
+          </Link>
 
-          <button 
-            onClick={() => router.push('/dashboard/reservations?filter=pending')}
-            className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 border-l-4 border-orange-500 hover:shadow-xl transition active:scale-95 text-left w-full"
+          <Link 
+            href="/dashboard/reservations?filter=pending"
+            className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 border-l-4 border-orange-500 hover:shadow-xl transition active:scale-95 block"
           >
             <div className="flex items-center justify-between">
               <div>
@@ -312,11 +313,11 @@ export default function DashboardPage() {
                 <span className="text-xl sm:text-2xl">⏳</span>
               </div>
             </div>
-          </button>
+          </Link>
 
-          <button 
-            onClick={() => router.push('/dashboard/reservations?filter=confirmed')}
-            className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 border-l-4 border-green-500 hover:shadow-xl transition active:scale-95 text-left w-full"
+          <Link 
+            href="/dashboard/reservations?filter=confirmed"
+            className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 border-l-4 border-green-500 hover:shadow-xl transition active:scale-95 block"
           >
             <div className="flex items-center justify-between">
               <div>
@@ -329,7 +330,7 @@ export default function DashboardPage() {
                 <span className="text-xl sm:text-2xl">✅</span>
               </div>
             </div>
-          </button>
+          </Link>
 
           <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 border-l-4 border-purple-500">
             <div className="flex items-center justify-between">
@@ -507,8 +508,8 @@ export default function DashboardPage() {
               <h2 className="text-xl font-bold text-gray-900">
                 Dernières Réservations
               </h2>
-              <button
-                onClick={() => router.push("/dashboard/reservations")}
+              <Link
+                href="/dashboard/reservations"
                 className="text-blue-600 hover:text-blue-700 font-semibold text-sm flex items-center gap-1"
               >
                 Voir tout
@@ -525,7 +526,7 @@ export default function DashboardPage() {
                     d="M9 5l7 7-7 7"
                   ></path>
                 </svg>
-              </button>
+              </Link>
             </div>
 
             <div className="space-y-3">
