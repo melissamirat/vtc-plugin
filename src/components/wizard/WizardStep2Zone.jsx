@@ -442,7 +442,7 @@ export default function WizardStep2Zone({ wizardData, onNext, onBack, saving }) 
             </p>
             <p className="text-sm text-stone-700">
               <strong>Tarif configuré :</strong> {wizardData.vehicle.pricing.minPrice}€ min,
-              puis {wizardData.vehicle.pricing.perKm}€/km au-delà de {wizardData.vehicle.pricing.kmThreshold} km
+              ou {wizardData.vehicle.pricing.perKm}€/km au-delà de {wizardData.vehicle.pricing.kmThreshold} km
             </p>
           </div>
         )}
