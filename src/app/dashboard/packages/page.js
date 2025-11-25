@@ -376,20 +376,20 @@ export default function PackagesPage() {
 
   if (!user || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-100 via-gray-50 to-gray-100">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-stone-100 via-gray-50 to-gray-100">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-stone-700"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br  from-green-100 via-grey-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br  from-stone-100 via-grey-50 to-gray-100">
       {/* Header */}
       <header className="bg-white/90 backdrop-blur-sm shadow-md sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-green-600 to-gray-600 bg-clip-text text-transparent">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-stone-700 to-stone-600 bg-clip-text text-transparent">
                 Gestion des Forfaits
               </h1>
               <p className="text-sm text-gray-600 mt-0.5">
@@ -413,7 +413,7 @@ export default function PackagesPage() {
           <div
             className={`mb-6 p-4 rounded-xl shadow-lg border-2 animate-in fade-in slide-in-from-top-2 ${
               message.type === "success"
-                ? "bg-green-50 border-green-300 text-green-800"
+                ? "bg-stone-50 border-stone-400 text-stone-800"
                 : "bg-red-50 border-red-300 text-red-800"
             }`}
           >
@@ -425,7 +425,7 @@ export default function PackagesPage() {
         <div className="mb-6 flex justify-end">
           <button
             onClick={openAddModal}
-            className="px-6 py-3 bg-gradient-to-r from-green-600 to-gray-600 text-white rounded-xl hover:shadow-xl hover:scale-105 transition-all font-semibold flex items-center gap-2"
+            className="px-6 py-3 bg-gradient-to-r from-stone-700 to-stone-600 text-white rounded-xl hover:shadow-xl hover:scale-105 transition-all font-semibold flex items-center gap-2"
           >
             <span className="text-xl">+</span>
             Nouveau forfait
@@ -434,7 +434,7 @@ export default function PackagesPage() {
 
         {/* Liste des forfaits */}
         {packages.length === 0 ? (
-          <div className="text-center py-20 bg-white/70 backdrop-blur-sm rounded-2xl border-2 border-green-200 shadow-lg">
+          <div className="text-center py-20 bg-white/70 backdrop-blur-sm rounded-2xl border-2 border-stone-300 shadow-lg">
             <div className="text-6xl mb-4">📦</div>
             <h3 className="text-2xl font-bold text-gray-800 mb-2">
               Aucun forfait
@@ -444,7 +444,7 @@ export default function PackagesPage() {
             </p>
             <button
               onClick={openAddModal}
-              className="px-8 py-3 bg-gradient-to-r from-green-600 to-green-600 text-white rounded-xl hover:shadow-xl transition-all font-semibold"
+              className="px-8 py-3 bg-gradient-to-r from-stone-700 to-stone-600 text-white rounded-xl hover:shadow-xl transition-all font-semibold"
             >
               Créer un forfait
             </button>
@@ -454,19 +454,19 @@ export default function PackagesPage() {
             {packages.map((pack) => (
               <div
                 key={pack.id}
-                className="bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-green-200 shadow-lg hover:shadow-2xl hover:border-green-300 transition-all p-6"
+                className="bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-stone-300 shadow-lg hover:shadow-2xl hover:border-stone-400 transition-all p-6"
               >
                 {/* Header du forfait */}
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-1">
-                      <h3 className="text-xl font-bold text-gray-800">
+                      <h3 className="text-xl font-bold text-white bg-gradient-to-r from-stone-700 to-stone-600 px-4 py-2 rounded-xl shadow-md">
                         {pack.name}
                       </h3>
                       <span
                         className={`px-2.5 py-1 text-xs font-semibold rounded-lg ${
                           pack.enabled
-                            ? "bg-green-100 text-green-700"
+                            ? "bg-stone-100 text-stone-700"
                             : "bg-gray-100 text-gray-600"
                         }`}
                       >
@@ -483,7 +483,7 @@ export default function PackagesPage() {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => openEditModal(pack)}
-                      className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                      className="p-2 text-stone-600 hover:bg-stone-50 rounded-lg transition-colors"
                       title="Modifier"
                     >
                       <svg
@@ -524,7 +524,7 @@ export default function PackagesPage() {
 
                 {/* Prix */}
                 <div className="mb-4">
-                  <div className="inline-flex items-baseline px-4 py-2 bg-gradient-to-r from-green-500 to-gray-500 text-white rounded-xl shadow-md">
+                  <div className="inline-flex items-baseline px-4 py-2 bg-gradient-to-r from-stone-600 to-stone-500 text-white rounded-xl shadow-md">
                     <span className="text-3xl font-bold">{pack.price}</span>
                     <span className="text-lg ml-1">€</span>
                   </div>
@@ -543,7 +543,7 @@ export default function PackagesPage() {
                       {(pack.departureZones || []).map((zone, idx) => (
                         <span
                           key={idx}
-                          className="px-3 py-1.5 bg-green-50 text-green-700 rounded-lg text-sm font-medium border border-green-200"
+                          className="px-3 py-1.5 bg-stone-50 text-stone-700 rounded-lg text-sm font-medium border border-stone-300"
                         >
                           {typeof zone === "string" ? zone : zone.name}
                         </span>
@@ -600,11 +600,11 @@ export default function PackagesPage() {
 
         {/* Bouton sauvegarder fixe */}
         {packages.length > 0 && (
-          <div className="sticky bottom-6 bg-white/90 backdrop-blur-sm border-2 border-green-300 rounded-2xl p-4 shadow-2xl">
+          <div className="sticky bottom-6 bg-white/90 backdrop-blur-sm border-2 border-stone-400 rounded-2xl p-4 shadow-2xl">
             <button
               onClick={handleSave}
               disabled={saving}
-              className="w-full px-6 py-4 bg-gradient-to-r from-green-600 to-gray-600 text-white rounded-xl hover:shadow-xl font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:scale-[1.02]"
+              className="w-full px-6 py-4 bg-gradient-to-r from-stone-700 to-stone-600 text-white rounded-xl hover:shadow-xl font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:scale-[1.02]"
             >
               {saving ? (
                 <span className="flex items-center justify-center gap-2">
@@ -623,7 +623,7 @@ export default function PackagesPage() {
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray/50 backdrop-blur-sm p-4">
             <div className="bg-white rounded-3xl shadow-2xl w-full max-w-5xl max-h-[95vh] overflow-hidden flex flex-col">
               {/* Header du modal */}
-              <div className="px-6 py-5 bg-gradient-to-r from-green-600 to-gray-600 text-white">
+              <div className="px-6 py-5 bg-gradient-to-r from-stone-700 to-stone-600 text-white">
                 <h3 className="text-2xl font-bold">
                   {editingPackage
                     ? "✏️ Modifier le forfait"
@@ -640,8 +640,8 @@ export default function PackagesPage() {
               <div className="flex-1 overflow-y-auto px-6 py-6">
                 <div className="space-y-6">
                   {/* Infos de base */}
-                  <div className="bg-gradient-to-br from-green-50 to-gray-50 rounded-2xl p-5 border-2 border-green-200">
-                    <h4 className="font-bold text-lg mb-4 text-green-900">
+                  <div className="bg-gradient-to-br from-stone-50 to-stone-100 rounded-2xl p-5 border-2 border-stone-300">
+                    <h4 className="font-bold text-lg mb-4 text-stone-900">
                       📋 Informations générales
                     </h4>
 
@@ -657,7 +657,7 @@ export default function PackagesPage() {
                             setFormData({ ...formData, name: e.target.value })
                           }
                           placeholder="Ex: CDG → Paris Centre"
-                          className="w-full px-4 py-3 border-2 border-green-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
+                          className="w-full px-4 py-3 border-2 border-stone-300 rounded-xl focus:ring-2 focus:ring-stone-500 focus:border-stone-500 transition-all"
                         />
                       </div>
 
@@ -673,7 +673,7 @@ export default function PackagesPage() {
                             setFormData({ ...formData, price: e.target.value })
                           }
                           placeholder="100"
-                          className="w-full px-4 py-3 border-2 border-green-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
+                          className="w-full px-4 py-3 border-2 border-stone-300 rounded-xl focus:ring-2 focus:ring-stone-500 focus:border-stone-500 transition-all"
                         />
                       </div>
                     </div>
@@ -692,7 +692,7 @@ export default function PackagesPage() {
                           })
                         }
                         placeholder="Ex: Forfait aéroport avec assistance bagages"
-                        className="w-full px-4 py-3 border-2 border-green-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
+                        className="w-full px-4 py-3 border-2 border-stone-300 rounded-xl focus:ring-2 focus:ring-stone-500 focus:border-stone-500 transition-all"
                       />
                     </div>
 
@@ -707,7 +707,7 @@ export default function PackagesPage() {
                               enabled: e.target.checked,
                             })
                           }
-                          className="w-5 h-5 rounded border-green-300 text-green-600 focus:ring-green-500"
+                          className="w-5 h-5 rounded border-stone-400 text-stone-600 focus:ring-stone-500"
                         />
                         <span className="text-sm font-medium text-gray-700">
                           Activer ce forfait immédiatement
@@ -717,14 +717,14 @@ export default function PackagesPage() {
                   </div>
 
                   {/* Zone de départ */}
-                  <div className="bg-gradient-to-br from-blue-50 to-green-50 rounded-2xl p-5 border-2 border-blue-200">
-                    <h4 className="font-bold text-lg mb-3 text-blue-900 flex items-center gap-2">
+                  <div className="bg-gradient-to-br from-stone-50 to-amber-50 rounded-2xl p-5 border-2 border-stone-300">
+                    <h4 className="font-bold text-lg mb-3 text-stone-800 flex items-center gap-2">
                       <span className="text-2xl">📍</span>
                       Zones de départ
                     </h4>
 
                     {/* Tags sélectionnés */}
-                    <div className="mb-4 flex flex-wrap gap-2 min-h-[50px] p-3 bg-white rounded-xl border-2 border-blue-200">
+                    <div className="mb-4 flex flex-wrap gap-2 min-h-[50px] p-3 bg-white rounded-xl border-2 border-stone-300">
                       {formData.departureZones.length === 0 ? (
                         <span className="text-gray-400 text-sm italic">
                           Recherchez une gare, aéroport ou sélectionnez un
@@ -734,7 +734,7 @@ export default function PackagesPage() {
                         formData.departureZones.map((zone, idx) => (
                           <span
                             key={idx}
-                            className="inline-flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-blue-500 to-green-500 text-white rounded-xl text-sm font-semibold shadow-md"
+                            className="inline-flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-stone-700 to-stone-600 text-white rounded-xl text-sm font-semibold shadow-md"
                           >
                             {typeof zone === "string" ? zone : zone.name}
                             <button
@@ -758,24 +758,24 @@ export default function PackagesPage() {
                         value={departureSearch}
                         onChange={(e) => setDepartureSearch(e.target.value)}
                         placeholder="Gare de Lyon, Aéroport CDG, Paris..."
-                        className="w-full px-4 py-3 border-2 border-blue-300 rounded-xl focus:ring-2 focus:ring-blue-500 transition-all"
+                        className="w-full px-4 py-3 border-2 border-stone-400 rounded-xl focus:ring-2 focus:ring-stone-500 transition-all"
                       />
                       {searchingDeparture && (
                         <div className="absolute right-4 top-11">
-                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-stone-700"></div>
                         </div>
                       )}
 
                       {/* Suggestions */}
                       {departureSuggestions.length > 0 && (
-                        <div className="absolute z-10 w-full mt-2 bg-white border-2 border-blue-300 rounded-xl shadow-2xl max-h-72 overflow-y-auto">
+                        <div className="absolute z-10 w-full mt-2 bg-white border-2 border-stone-400 rounded-xl shadow-2xl max-h-72 overflow-y-auto">
                           {departureSuggestions.map((suggestion, idx) => (
                             <button
                               key={idx}
                               onClick={() =>
                                 addAddressZone("departure", suggestion)
                               }
-                              className="w-full px-4 py-3 text-left hover:bg-blue-50 border-b last:border-b-0 transition-colors flex items-start gap-3"
+                              className="w-full px-4 py-3 text-left hover:bg-stone-50 border-b last:border-b-0 transition-colors flex items-start gap-3"
                             >
                               <span className="text-2xl flex-shrink-0">
                                 {suggestion.icon}
@@ -807,8 +807,8 @@ export default function PackagesPage() {
                             title={dept.name}
                             className={`px-3 py-2 text-sm font-semibold border-2 rounded-lg transition-all ${
                               formData.departureZones.includes(dept.code)
-                                ? "bg-gradient-to-r from-blue-500 to-green-500 text-white border-blue-600 shadow-md"
-                                : "bg-white hover:bg-blue-50 border-gray-300 text-gray-700"
+                                ? "bg-gradient-to-r from-stone-700 to-stone-600 text-white border-stone-700 shadow-md"
+                                : "bg-white hover:bg-stone-50 border-gray-300 text-gray-700"
                             }`}
                           >
                             {dept.code}
@@ -819,14 +819,14 @@ export default function PackagesPage() {
                   </div>
 
                   {/* Zone d'arrivée */}
-                  <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-5 border-2 border-green-200">
-                    <h4 className="font-bold text-lg mb-3 text-green-900 flex items-center gap-2">
+                  <div className="bg-gradient-to-br from-stone-50 to-amber-50 rounded-2xl p-5 border-2 border-stone-300">
+                    <h4 className="font-bold text-lg mb-3 text-stone-900 flex items-center gap-2">
                       <span className="text-2xl">🎯</span>
                       Zones d'arrivée
                     </h4>
 
                     {/* Tags sélectionnés */}
-                    <div className="mb-4 flex flex-wrap gap-2 min-h-[50px] p-3 bg-white rounded-xl border-2 border-green-200">
+                    <div className="mb-4 flex flex-wrap gap-2 min-h-[50px] p-3 bg-white rounded-xl border-2 border-stone-300">
                       {formData.arrivalZones.length === 0 ? (
                         <span className="text-gray-400 text-sm italic">
                           Recherchez une gare, aéroport ou sélectionnez un
@@ -836,7 +836,7 @@ export default function PackagesPage() {
                         formData.arrivalZones.map((zone, idx) => (
                           <span
                             key={idx}
-                            className="inline-flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl text-sm font-semibold shadow-md"
+                            className="inline-flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-stone-600 to-amber-500 text-white rounded-xl text-sm font-semibold shadow-md"
                           >
                             {typeof zone === "string" ? zone : zone.name}
                             <button
@@ -860,24 +860,24 @@ export default function PackagesPage() {
                         value={arrivalSearch}
                         onChange={(e) => setArrivalSearch(e.target.value)}
                         placeholder="Gare du Nord, Paris, Lyon..."
-                        className="w-full px-4 py-3 border-2 border-green-300 rounded-xl focus:ring-2 focus:ring-green-500 transition-all"
+                        className="w-full px-4 py-3 border-2 border-stone-400 rounded-xl focus:ring-2 focus:ring-stone-500 transition-all"
                       />
                       {searchingArrival && (
                         <div className="absolute right-4 top-11">
-                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-green-600"></div>
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-stone-700"></div>
                         </div>
                       )}
 
                       {/* Suggestions */}
                       {arrivalSuggestions.length > 0 && (
-                        <div className="absolute z-10 w-full mt-2 bg-white border-2 border-green-300 rounded-xl shadow-2xl max-h-72 overflow-y-auto">
+                        <div className="absolute z-10 w-full mt-2 bg-white border-2 border-stone-400 rounded-xl shadow-2xl max-h-72 overflow-y-auto">
                           {arrivalSuggestions.map((suggestion, idx) => (
                             <button
                               key={idx}
                               onClick={() =>
                                 addAddressZone("arrival", suggestion)
                               }
-                              className="w-full px-4 py-3 text-left hover:bg-green-50 border-b last:border-b-0 transition-colors flex items-start gap-3"
+                              className="w-full px-4 py-3 text-left hover:bg-stone-50 border-b last:border-b-0 transition-colors flex items-start gap-3"
                             >
                               <span className="text-2xl flex-shrink-0">
                                 {suggestion.icon}
@@ -909,8 +909,8 @@ export default function PackagesPage() {
                             title={dept.name}
                             className={`px-3 py-2 text-sm font-semibold border-2 rounded-lg transition-all ${
                               formData.arrivalZones.includes(dept.code)
-                                ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white border-green-600 shadow-md"
-                                : "bg-white hover:bg-green-50 border-gray-300 text-gray-700"
+                                ? "bg-gradient-to-r from-stone-600 to-amber-500 text-white border-stone-700 shadow-md"
+                                : "bg-white hover:bg-stone-50 border-gray-300 text-gray-700"
                             }`}
                           >
                             {dept.code}
@@ -922,7 +922,7 @@ export default function PackagesPage() {
 
                   {/* Véhicules compatibles */}
                   {vehicles.length > 0 && (
-                    <div className="bg-gradient-to-br from-gray-50 to-gray-50 rounded-2xl p-5 border-2 border-gray-200">
+                    <div className="bg-gradient-to-br from-gray-50 to-stone-100 rounded-2xl p-5 border-2 border-gray-200">
                       <h4 className="font-bold text-lg mb-3 text-gray-900">
                         🚗 Types de véhicules compatibles
                         <span className="text-sm font-normal text-gray-600 ml-2">
@@ -962,8 +962,8 @@ export default function PackagesPage() {
                   )}
 
                   {/* Info bulle */}
-                  <div className="p-4 bg-green-50 border-2 border-green-200 rounded-xl">
-                    <p className="text-sm text-green-800">
+                  <div className="p-4 bg-stone-50 border-2 border-stone-300 rounded-xl">
+                    <p className="text-sm text-stone-800">
                       <strong>💡 Astuce :</strong> Les forfaits sont
                       automatiquement détectés grâce aux coordonnées GPS (rayon
                       1km) et aux codes postaux. Tapez "Gare de Lyon" ou
@@ -986,7 +986,7 @@ export default function PackagesPage() {
                 </button>
                 <button
                   onClick={handleSubmitPackage}
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-green-600 to-gray-600 text-white rounded-xl hover:shadow-xl font-bold transition-all hover:scale-[1.02]"
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-stone-700 to-stone-600 text-white rounded-xl hover:shadow-xl font-bold transition-all hover:scale-[1.02]"
                 >
                   {editingPackage
                     ? "✓ Modifier le forfait"

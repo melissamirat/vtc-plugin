@@ -1,6 +1,6 @@
 // src/app/api/send-confirmation/route.js
 // API pour envoyer l'email de CONFIRMATION au client
-// VERSION 2 - PDF COMPACT
+// VERSION CORRIGÉE - Compatible avec nouvelle structure
 
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
@@ -80,8 +80,11 @@ function generateConfirmationPDFBuffer(booking, config) {
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(30, 41, 59);
   doc.setFontSize(9);
-  const paxText = `${booking.passengers || 1} Pasaggers`;
-  const lugText = booking.luggage ? ` - ${booking.luggage} Bagages` : '';
+  // ✅ CORRIGÉ - Utilise details.passengers ou passengers
+  const passengers = booking.details?.passengers || booking.passengers || 1;
+  const luggage = booking.details?.luggage || booking.luggage || 0;
+  const paxText = `${passengers} Passager${passengers > 1 ? 's' : ''}`;
+  const lugText = luggage > 0 ? ` - ${luggage} Bagage${luggage > 1 ? 's' : ''}` : '';
   doc.text(paxText + lugText, pageWidth - margin - 4, y + 17, { align: 'right' });
 
   // ═══════════════════════════════════════════════════════════════
@@ -98,22 +101,22 @@ function generateConfirmationPDFBuffer(booking, config) {
   
   y += 12;
   
-  // Départ
+  // ✅ CORRIGÉ - Départ (essaie trip.departure puis departure.address)
   doc.setFillColor(34, 197, 94);
   doc.circle(margin + 5, y + 2, 3, 'F');
   doc.setTextColor(30, 41, 59);
   doc.setFontSize(9);
   doc.setFont('helvetica', 'normal');
-  const departText = booking.departure?.address || '-';
+  const departText = booking.trip?.departure || booking.departure?.address || '-';
   const departShort = departText.length > 70 ? departText.substring(0, 70) + '...' : departText;
   doc.text(departShort, margin + 12, y + 4);
   
   y += 12;
   
-  // Arrivée
+  // ✅ CORRIGÉ - Arrivée (essaie trip.arrival puis arrival.address)
   doc.setFillColor(239, 68, 68);
   doc.circle(margin + 5, y + 2, 3, 'F');
-  const arrivalText = booking.arrival?.address || '-';
+  const arrivalText = booking.trip?.arrival || booking.arrival?.address || '-';
   const arrivalShort = arrivalText.length > 70 ? arrivalText.substring(0, 70) + '...' : arrivalText;
   doc.text(arrivalShort, margin + 12, y + 4);
 
@@ -127,7 +130,7 @@ function generateConfirmationPDFBuffer(booking, config) {
   
   const colWidth = contentWidth / 4;
   
-  // Date
+  // ✅ CORRIGÉ - Date (trip.date)
   doc.setTextColor(5, 150, 105);
   doc.setFontSize(7);
   doc.setFont('helvetica', 'bold');
@@ -135,7 +138,7 @@ function generateConfirmationPDFBuffer(booking, config) {
   doc.setTextColor(30, 41, 59);
   doc.setFontSize(9);
   doc.setFont('helvetica', 'bold');
-  let displayDate = booking.date || '-';
+  let displayDate = booking.trip?.date || booking.date || '-';
   if (displayDate && displayDate !== '-' && displayDate.includes('-')) {
     const parts = displayDate.split('-');
     if (parts.length === 3) {
@@ -144,7 +147,7 @@ function generateConfirmationPDFBuffer(booking, config) {
   }
   doc.text(displayDate, margin + 4, y + 16);
   
-  // Heure
+  // ✅ CORRIGÉ - Heure (trip.time)
   doc.setTextColor(5, 150, 105);
   doc.setFontSize(7);
   doc.setFont('helvetica', 'bold');
@@ -152,9 +155,9 @@ function generateConfirmationPDFBuffer(booking, config) {
   doc.setTextColor(30, 41, 59);
   doc.setFontSize(9);
   doc.setFont('helvetica', 'bold');
-  doc.text(booking.time || '-', margin + colWidth + 4, y + 16);
+  doc.text(booking.trip?.time || booking.time || '-', margin + colWidth + 4, y + 16);
   
-  // Véhicule
+  // ✅ CORRIGÉ - Véhicule
   doc.setTextColor(5, 150, 105);
   doc.setFontSize(7);
   doc.setFont('helvetica', 'bold');
@@ -166,7 +169,7 @@ function generateConfirmationPDFBuffer(booking, config) {
   const vehicleShort = vehicleName.length > 15 ? vehicleName.substring(0, 15) + '...' : vehicleName;
   doc.text(vehicleShort, margin + colWidth * 2 + 4, y + 16);
   
-  // Distance
+  // ✅ CORRIGÉ - Distance
   doc.setTextColor(5, 150, 105);
   doc.setFontSize(7);
   doc.setFont('helvetica', 'bold');
@@ -174,7 +177,8 @@ function generateConfirmationPDFBuffer(booking, config) {
   doc.setTextColor(30, 41, 59);
   doc.setFontSize(9);
   doc.setFont('helvetica', 'bold');
-  doc.text(`${booking.distance || '-'} km`, margin + colWidth * 3 + 4, y + 16);
+  const distance = booking.pricing?.distanceKm || booking.distance || 0;
+  doc.text(`${distance} km`, margin + colWidth * 3 + 4, y + 16);
 
   // ═══════════════════════════════════════════════════════════════
   // TOTAL
@@ -189,7 +193,7 @@ function generateConfirmationPDFBuffer(booking, config) {
   doc.setFont('helvetica', 'normal');
   doc.text('MONTANT CONFIRME', margin + 10, y + 15);
   
-  const totalPrice = booking.pricing?.priceEstimate || 0;
+  const totalPrice = booking.pricing?.priceEstimate || booking.pricing?.finalPrice || 0;
   doc.setFontSize(24);
   doc.setFont('helvetica', 'bold');
   doc.text(`${Number(totalPrice).toFixed(2)} EUR`, pageWidth - margin - 10, y + 24, { align: 'right' });
@@ -202,8 +206,9 @@ function generateConfirmationPDFBuffer(booking, config) {
   doc.setTextColor(100, 116, 139);
   doc.setFontSize(9);
   doc.setFont('helvetica', 'normal');
-  if (booking.paymentMethod) {
-    doc.text(`Paiement: ${booking.paymentMethod}`, margin, y);
+  if (booking.payment?.method || booking.paymentMethod) {
+    const paymentMethod = booking.payment?.method || booking.paymentMethod;
+    doc.text(`Paiement: ${paymentMethod}`, margin, y);
   }
 
   // ═══════════════════════════════════════════════════════════════
@@ -227,8 +232,14 @@ function generateConfirmationPDFBuffer(booking, config) {
 function getConfirmationEmailTemplate(booking, config) {
   const companyName = config?.branding?.companyName || 'VTC Service';
   const primaryColor = '#059669';
-  const totalPrice = booking.pricing?.priceEstimate || 0;
+  const totalPrice = booking.pricing?.priceEstimate || booking.pricing?.finalPrice || 0;
   const vehicleName = booking.vehicle?.name || booking.vehicle || '-';
+  
+  // ✅ CORRIGÉ - Utilise la nouvelle structure
+  const tripDate = booking.trip?.date || booking.date || '-';
+  const tripTime = booking.trip?.time || booking.time || '-';
+  const departure = booking.trip?.departure || booking.departure?.address || '-';
+  const arrival = booking.trip?.arrival || booking.arrival?.address || '-';
   
   return `
 <!DOCTYPE html>
@@ -245,7 +256,7 @@ function getConfirmationEmailTemplate(booking, config) {
           <span style="font-size: 28px;">✓</span>
         </div>
         <h1 style="color: #ffffff; margin: 0; font-size: 22px;">${companyName}</h1>
-        <p style="color: #ffffff; opacity: 0.9; margin: 8px 0 0 0; font-size: 16px;">Reservation Confirmee !</p>
+        <p style="color: #ffffff; opacity: 0.9; margin: 8px 0 0 0; font-size: 16px;">Reservation Confirmée !</p>
       </td>
     </tr>
     <tr>
@@ -254,7 +265,7 @@ function getConfirmationEmailTemplate(booking, config) {
         
         <div style="background-color: #ecfdf5; border: 2px solid #059669; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
           <p style="color: #065f46; font-size: 14px; margin: 0; font-weight: bold;">
-            ✅ Votre reservation est confirmee !
+            ✅ Votre reservation est confirmée !
           </p>
           <p style="color: #065f46; font-size: 13px; margin: 8px 0 0 0;">
             Notre chauffeur sera present a l'adresse indiquee.
@@ -265,15 +276,15 @@ function getConfirmationEmailTemplate(booking, config) {
           <table width="100%" cellpadding="6" cellspacing="0" style="font-size: 13px;">
             <tr>
               <td style="color: #6b7280;">Date</td>
-              <td style="color: #1f2937; font-weight: 600; text-align: right;">${booking.date || '-'} a ${booking.time || '-'}</td>
+              <td style="color: #1f2937; font-weight: 600; text-align: right;">${tripDate} a ${tripTime}</td>
             </tr>
             <tr>
               <td style="color: #6b7280;">Depart</td>
-              <td style="color: #1f2937; text-align: right;">${booking.departure?.address || '-'}</td>
+              <td style="color: #1f2937; text-align: right;">${departure}</td>
             </tr>
             <tr>
               <td style="color: #6b7280;">Arrivee</td>
-              <td style="color: #1f2937; text-align: right;">${booking.arrival?.address || '-'}</td>
+              <td style="color: #1f2937; text-align: right;">${arrival}</td>
             </tr>
             <tr>
               <td style="color: #6b7280;">Vehicule</td>
@@ -336,7 +347,7 @@ export async function POST(request) {
     await transporter.sendMail({
       from: `"${companyName}" <${fromEmail}>`,
       to: booking.customer.email,
-      subject: `✅ Reservation confirmee - ${companyName}`,
+      subject: `✅ Reservation Confirmée - ${companyName}`,
       html: getConfirmationEmailTemplate(booking, config),
       attachments: [{ filename: 'confirmation.pdf', content: pdfBuffer, contentType: 'application/pdf' }],
     });

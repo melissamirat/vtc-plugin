@@ -618,3 +618,46 @@ export async function deleteBooking(bookingId) {
     return { success: false, error: error.message };
   }
 }
+
+/**
+ * Met à jour la configuration de paiement d'un widget
+ */
+export async function updatePaymentConfig(widgetId, paymentConfig) {
+  try {
+    const widgetRef = doc(db, 'widgets', widgetId);
+    
+    await updateDoc(widgetRef, {
+      'config.paymentConfig': paymentConfig,
+      updatedAt: new Date().toISOString()
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error('Erreur updatePaymentConfig:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+
+
+/**
+ * Enregistre les détails du compte Stripe après connexion
+ */
+export async function saveStripeAccount(widgetId, accountId) {
+  try {
+    const widgetRef = doc(db, 'widgets', widgetId);
+    
+    await updateDoc(widgetRef, {
+      'config.paymentConfig.stripe.connected': true,
+      'config.paymentConfig.stripe.accountId': accountId,
+      'config.paymentConfig.stripe.enabled': true,
+      updatedAt: new Date().toISOString()
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error('Erreur saveStripeAccount:', error);
+    return { success: false, error: error.message };
+  }
+}

@@ -81,7 +81,6 @@ export default function VehiclesPage() {
         max: 4,
         pricePerExtra: 5.0
       },
-      icon: '🚗',
       enabled: true,
       pricing: {
         mode: 'km',
@@ -200,9 +199,6 @@ export default function VehiclesPage() {
                 {/* Header */}
                 <div className="mb-4">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="text-4xl p-2 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border-2 border-blue-200">
-                      {vehicle.icon}
-                    </div>
                     <div className="flex-1">
                       <input
                         type="text"
@@ -250,25 +246,14 @@ export default function VehiclesPage() {
                 {/* Configuration de base */}
                 <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-3 mb-3 border-2 border-blue-200">
                   <h4 className="font-bold text-xs text-blue-900 mb-2 uppercase tracking-wide">⚙️ Configuration</h4>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-semibold text-gray-700 mb-1">Icône</label>
-                      <input
-                        type="text"
-                        value={vehicle.icon || '🚗'}
-                        onChange={(e) => handleUpdateVehicle(vehicle.id, 'icon', e.target.value)}
-                        className="w-full px-2 py-1.5 border-2 border-blue-200 rounded-lg text-2xl text-center focus:ring-2 focus:ring-blue-500 transition-all"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-gray-700 mb-1">👥 Passagers max</label>
-                      <input
-                        type="number"
-                        value={vehicle.maxPassengers || 0}
-                        onChange={(e) => handleUpdateVehicle(vehicle.id, 'maxPassengers', parseInt(e.target.value))}
-                        className="w-full px-2 py-1.5 border-2 border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all"
-                      />
-                    </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 mb-1">👥 Passagers max</label>
+                    <input
+                      type="number"
+                      value={vehicle.maxPassengers || 0}
+                      onChange={(e) => handleUpdateVehicle(vehicle.id, 'maxPassengers', parseInt(e.target.value))}
+                      className="w-full px-2 py-1.5 border-2 border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all"
+                    />
                   </div>
                 </div>
 

@@ -101,7 +101,7 @@ export default function ZonesPage() {
       vehiclePricing: vehicles.map((v) => ({
         vehicleId: v.id,
         vehicleName: v.name,
-        useDefaultPricing: true,  // ← Par défaut : utiliser les tarifs du véhicule
+        useDefaultPricing: true,
         pricing: {
           basePrice: v.pricing?.minPrice || 10.0,
           pricePerKm: v.pricing?.perKm || 2.0,
@@ -195,22 +195,21 @@ export default function ZonesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-indigo-50 to-purple-100">
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-indigo-50 to-purple-100 overflow-x-hidden">
       <header className="bg-white/90 backdrop-blur-sm shadow-md sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 py-3 sm:py-4">
+          <div className="flex justify-between items-center gap-2">
+            <div className="min-w-0 flex-1">
+              <h1 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent truncate">
                 Zones de Service
               </h1>
-              <p className="text-sm text-gray-600 mt-0.5">
-                {zones.length} zone{zones.length !== 1 ? "s" : ""} configurée
-                {zones.length !== 1 ? "s" : ""}
+              <p className="text-xs sm:text-sm text-gray-600 mt-0.5">
+                {zones.length} zone{zones.length !== 1 ? "s" : ""}
               </p>
             </div>
             <button
               onClick={() => router.push("/dashboard")}
-              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+              className="px-3 sm:px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium text-sm flex-shrink-0"
             >
               ← Retour
             </button>
@@ -218,55 +217,51 @@ export default function ZonesPage() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+      <main className="max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-6">
         {/* Message de notification */}
         {message.text && (
           <div
-            className={`mb-6 p-4 rounded-xl shadow-lg border-2 animate-in fade-in slide-in-from-top-2 ${
+            className={`mb-4 sm:mb-6 p-3 sm:p-4 rounded-xl shadow-lg border-2 animate-in fade-in slide-in-from-top-2 ${
               message.type === "success"
                 ? "bg-green-50 border-green-300 text-green-800"
                 : "bg-red-50 border-red-300 text-red-800"
             }`}
           >
-            <p className="font-medium">{message.text}</p>
+            <p className="font-medium text-sm sm:text-base">{message.text}</p>
           </div>
         )}
 
         {/* Actions */}
-        <div className="mb-6 flex gap-4 justify-between items-center">
-          <div className="flex gap-2">
+        <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row gap-3 sm:gap-4 sm:justify-between sm:items-center">
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
             <button
               onClick={handleCreateZone}
               disabled={!mapsLoaded}
-              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:shadow-xl hover:scale-105 transition-all font-semibold flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:shadow-xl hover:scale-105 transition-all font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
             >
-              <span className="text-xl">+</span>
+              <span className="text-lg sm:text-xl">+</span>
               Créer une zone
             </button>
 
             {!mapsLoaded && (
-              <div className="flex items-center gap-2 text-sm text-amber-600 bg-amber-50 px-4 py-2 rounded-lg border border-amber-200">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-amber-600"></div>
-                Chargement de Google Maps...
+              <div className="flex items-center justify-center gap-2 text-xs sm:text-sm text-amber-600 bg-amber-50 px-3 sm:px-4 py-2 rounded-lg border border-amber-200">
+                <div className="animate-spin rounded-full h-3 w-3 sm:h-4 sm:w-4 border-b-2 border-amber-600"></div>
+                Chargement Maps...
               </div>
             )}
           </div>
 
-          <div className="text-sm text-gray-600 bg-white px-4 py-2 rounded-lg border-2 border-gray-200">
+          <div className="text-xs sm:text-sm text-gray-600 bg-white px-3 sm:px-4 py-2 rounded-lg border-2 border-gray-200 text-center">
             <span className="font-semibold text-blue-600">
               {zones.filter((z) => z.enabled).length}
             </span>{" "}
-            active{zones.filter((z) => z.enabled).length !== 1 ? "s" : ""} /
-            <span className="font-semibold text-gray-500">
-              {" "}
-              {zones.length}
-            </span>{" "}
-            total
+            active{zones.filter((z) => z.enabled).length !== 1 ? "s" : ""} /{" "}
+            <span className="font-semibold text-gray-500">{zones.length}</span> total
           </div>
         </div>
 
         {/* Liste des zones */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
           {zones.map((zone) => (
             <ZoneCard
               key={zone.id}
@@ -281,18 +276,18 @@ export default function ZonesPage() {
 
         {/* Message si aucune zone */}
         {zones.length === 0 && (
-          <div className="text-center py-16 bg-white rounded-2xl border-2 border-dashed border-gray-300">
-            <div className="text-6xl mb-4">🗺️</div>
-            <h3 className="text-xl font-bold text-gray-700 mb-2">
+          <div className="text-center py-12 sm:py-16 bg-white rounded-2xl border-2 border-dashed border-gray-300">
+            <div className="text-4xl sm:text-6xl mb-3 sm:mb-4">🗺️</div>
+            <h3 className="text-lg sm:text-xl font-bold text-gray-700 mb-2 px-4">
               Aucune zone configurée
             </h3>
-            <p className="text-gray-500 mb-6">
-              Créez votre première zone de service pour commencer
+            <p className="text-sm sm:text-base text-gray-500 mb-4 sm:mb-6 px-4">
+              Créez votre première zone de service
             </p>
             <button
               onClick={handleCreateZone}
               disabled={!mapsLoaded}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold disabled:opacity-50"
+              className="px-5 sm:px-6 py-2.5 sm:py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold disabled:opacity-50 text-sm sm:text-base"
             >
               Créer une zone
             </button>
@@ -301,19 +296,19 @@ export default function ZonesPage() {
 
         {/* Bouton sauvegarder fixe */}
         {zones.length > 0 && (
-          <div className="sticky bottom-4 bg-white/90 backdrop-blur-sm border-2 border-blue-300 rounded-xl p-3 shadow-xl">
+          <div className="sticky bottom-3 sm:bottom-4 bg-white/90 backdrop-blur-sm border-2 border-blue-300 rounded-xl p-2.5 sm:p-3 shadow-xl">
             <button
               onClick={handleSave}
               disabled={saving}
-              className="w-full px-5 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:shadow-lg font-bold text-base disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:scale-[1.01]"
+              className="w-full px-4 sm:px-5 py-2.5 sm:py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:shadow-lg font-bold text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:scale-[1.01]"
             >
               {saving ? (
                 <span className="flex items-center justify-center gap-2">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  <div className="animate-spin rounded-full h-3 w-3 sm:h-4 sm:w-4 border-b-2 border-white"></div>
                   Enregistrement...
                 </span>
               ) : (
-                "💾 Sauvegarder toutes les modifications"
+                "💾 Sauvegarder"
               )}
             </button>
           </div>

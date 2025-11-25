@@ -195,7 +195,7 @@ export default function VehiclePricingEditor({ vehiclePricing, vehicles, onChang
                       {/* Prix minimum */}
                       <div>
                         <label className="block text-xs font-semibold text-gray-700 mb-1">
-                          🎯 Prix minimum de course (€)
+                          🎯 Forfait minimum (€)
                         </label>
                         <input
                           type="number"

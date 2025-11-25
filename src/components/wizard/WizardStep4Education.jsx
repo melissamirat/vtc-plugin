@@ -5,163 +5,119 @@ export default function WizardStep4Education({ wizardData, onNext, onBack, savin
     <div className="max-w-3xl mx-auto">
       {/* En-tête avec illustration */}
       <div className="text-center mb-8">
-        <div className="w-24 h-24 mx-auto bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center shadow-xl mb-4">
-          <span className="text-5xl">🎉</span>
+        <div className="relative mb-6">
+          <div className="w-24 h-24 mx-auto bg-gradient-to-br from-emerald-500 to-green-600 rounded-full flex items-center justify-center shadow-xl shadow-emerald-500/30">
+            <span className="text-5xl">✅</span>
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 to-transparent rounded-full blur-3xl"></div>
         </div>
-        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-          Configuration de base terminée !
+        <h2 className="text-2xl sm:text-3xl font-bold text-stone-900 mb-2">
+          Configuration essentielle terminée !
         </h2>
-        <p className="text-gray-600">
-          Vous avez configuré l'essentiel. Voici ce qui vous attend.
+        <p className="text-stone-600">
+          Récapitulatif de votre configuration
         </p>
       </div>
 
-      {/* Récapitulatif de ce qui a été configuré */}
-      <div className="bg-white rounded-2xl shadow-xl p-6 mb-6">
-        <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-          <span className="text-xl">✅</span>
-          Ce que vous avez configuré
+      {/* Récapitulatif compact */}
+      <div className="bg-white rounded-2xl shadow-xl shadow-stone-900/10 p-6 mb-6 border border-stone-200">
+        <h3 className="text-lg font-bold text-stone-900 mb-4 flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          Votre configuration
         </h3>
 
         <div className="space-y-3">
           {/* Véhicule */}
           {wizardData.vehicle && (
-            <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-xl border border-blue-200">
-              <span className="text-2xl">{wizardData.vehicle.icon}</span>
-              <div>
-                <p className="font-semibold text-gray-900">{wizardData.vehicle.name}</p>
-                <p className="text-sm text-gray-600">
+            <div className="group flex items-center gap-3 p-4 bg-gradient-to-r from-stone-50 to-amber-50 rounded-xl border border-stone-200 hover:shadow-md transition-all">
+              <div className="w-12 h-12 bg-gradient-to-br from-stone-600 to-stone-700 rounded-xl flex items-center justify-center text-2xl shadow-md">
+                {wizardData.vehicle.icon}
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold text-stone-900">{wizardData.vehicle.name}</p>
+                <p className="text-sm text-stone-600">
                   {wizardData.vehicle.maxPassengers} passagers • {wizardData.vehicle.luggage?.max || 4} bagages max
                 </p>
               </div>
-              <span className="ml-auto text-green-600 text-xl">✓</span>
+              <span className="text-emerald-600 text-2xl">✓</span>
             </div>
           )}
 
           {/* Zone */}
           {wizardData.zone && wizardData.zone.geography?.center && (
-            <div className="flex items-center gap-3 p-3 bg-purple-50 rounded-xl border border-purple-200">
-              <span className="text-2xl">🗺️</span>
-              <div>
-                <p className="font-semibold text-gray-900">Zone principale</p>
-                <p className="text-sm text-gray-600">
+            <div className="group flex items-center gap-3 p-4 bg-gradient-to-r from-amber-50 to-stone-50 rounded-xl border border-amber-200 hover:shadow-md transition-all">
+              <div className="w-12 h-12 bg-gradient-to-br from-amber-600 to-amber-700 rounded-xl flex items-center justify-center text-2xl shadow-md">
+                🗺️
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold text-stone-900">Zone de service</p>
+                <p className="text-sm text-stone-600">
                   {wizardData.zone.geography.center.address}
                   {wizardData.zone.geography.type === 'radius' && ` (${wizardData.zone.geography.radius} km)`}
                 </p>
               </div>
-              <span className="ml-auto text-green-600 text-xl">✓</span>
+              <span className="text-emerald-600 text-2xl">✓</span>
             </div>
           )}
 
           {/* Forfait */}
-          {wizardData.package && (
-            <div className="flex items-center gap-3 p-3 bg-green-50 rounded-xl border border-green-200">
-              <span className="text-2xl">🎫</span>
-              <div>
-                <p className="font-semibold text-gray-900">{wizardData.package.name}</p>
-                <p className="text-sm text-gray-600">
+          {wizardData.package ? (
+            <div className="group flex items-center gap-3 p-4 bg-gradient-to-r from-emerald-50 to-green-50 rounded-xl border border-emerald-200 hover:shadow-md transition-all">
+              <div className="w-12 h-12 bg-gradient-to-br from-emerald-600 to-green-600 rounded-xl flex items-center justify-center text-2xl shadow-md">
+                🎫
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold text-stone-900">{wizardData.package.name}</p>
+                <p className="text-sm text-stone-600">
                   Prix fixe : {wizardData.package.price}€
                 </p>
               </div>
-              <span className="ml-auto text-green-600 text-xl">✓</span>
+              <span className="text-emerald-600 text-2xl">✓</span>
             </div>
-          )}
-
-          {!wizardData.package && (
-            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl border border-gray-200">
-              <span className="text-2xl">🎫</span>
-              <div>
-                <p className="font-semibold text-gray-500">Forfait</p>
-                <p className="text-sm text-gray-400">Non configuré (vous pourrez en créer plus tard)</p>
+          ) : (
+            <div className="group flex items-center gap-3 p-4 bg-stone-50 rounded-xl border border-stone-200">
+              <div className="w-12 h-12 bg-stone-300 rounded-xl flex items-center justify-center text-2xl">
+                🎫
               </div>
-              <span className="ml-auto text-gray-400 text-xl">○</span>
+              <div className="flex-1">
+                <p className="font-semibold text-stone-500">Forfait</p>
+                <p className="text-sm text-stone-400">Vous pourrez en créer depuis le dashboard</p>
+              </div>
             </div>
           )}
         </div>
       </div>
 
-      {/* Fonctionnalités avancées - Teasing */}
-      <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl shadow-xl p-6 mb-6 border-2 border-indigo-200">
-        <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-          <span className="text-xl">💡</span>
-          Bon à savoir
-        </h3>
-
-        <div className="mb-6">
-          {/* Illustration de carte avec zones */}
-          <div className="bg-white rounded-xl p-4 mb-4">
-            <div className="relative h-40 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-lg overflow-hidden">
-              {/* Zone principale */}
-              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-blue-400/30 rounded-full border-2 border-blue-500 flex items-center justify-center">
-                <span className="text-xs font-bold text-blue-800">Zone<br/>principale</span>
-              </div>
-              {/* Zone spécifique 1 */}
-              <div className="absolute left-4 top-4 w-12 h-12 bg-green-400/40 rounded-full border-2 border-green-500 flex items-center justify-center">
-                <span className="text-[8px] font-bold text-green-800">Aéro</span>
-              </div>
-              {/* Zone spécifique 2 */}
-              <div className="absolute right-4 bottom-4 w-14 h-14 bg-orange-400/40 rounded-full border-2 border-orange-500 flex items-center justify-center">
-                <span className="text-[8px] font-bold text-orange-800">Station</span>
-              </div>
-              {/* Zone spécifique 3 */}
-              <div className="absolute right-8 top-6 w-10 h-10 bg-purple-400/40 rounded-full border-2 border-purple-500 flex items-center justify-center">
-                <span className="text-[8px] font-bold text-purple-800">Gare</span>
-              </div>
-            </div>
+      {/* Info dashboard */}
+      <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl shadow-lg p-6 mb-6 border-2 border-amber-200">
+        <div className="flex items-start gap-3 mb-4">
+          <div className="w-10 h-10 bg-gradient-to-br from-amber-600 to-orange-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
+            <span className="text-xl">💡</span>
           </div>
-
-          <p className="text-gray-700 leading-relaxed">
-            Depuis votre <strong>tableau de bord</strong>, vous pourrez :
-          </p>
+          <div>
+            <h3 className="font-bold text-stone-900 mb-1">Votre tableau de bord</h3>
+            <p className="text-sm text-stone-700">
+              Vous pourrez <strong>tout modifier et ajouter</strong> depuis le dashboard :
+            </p>
+          </div>
         </div>
 
-        <div className="space-y-3">
-          <div className="flex items-start gap-3 p-3 bg-white rounded-xl">
-            <span className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-              <span className="text-lg">🗺️</span>
-            </span>
-            <div>
-              <p className="font-semibold text-gray-900">Ajouter des zones spécifiques</p>
-              <p className="text-sm text-gray-600">
-                Créez des zones avec des tarifs différents (aéroports, stations de ski, zones touristiques...)
-              </p>
-            </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="flex items-center gap-2 text-sm text-stone-700">
+            <span className="text-emerald-600">•</span>
+            <span>Ajouter des véhicules</span>
           </div>
-
-          <div className="flex items-start gap-3 p-3 bg-white rounded-xl">
-            <span className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-              <span className="text-lg">🚗</span>
-            </span>
-            <div>
-              <p className="font-semibold text-gray-900">Ajouter d'autres véhicules</p>
-              <p className="text-sm text-gray-600">
-                Van 7 places, véhicule de luxe, chaque véhicule avec ses propres tarifs
-              </p>
-            </div>
+          <div className="flex items-center gap-2 text-sm text-stone-700">
+            <span className="text-emerald-600">•</span>
+            <span>Créer plus de zones</span>
           </div>
-
-          <div className="flex items-start gap-3 p-3 bg-white rounded-xl">
-            <span className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
-              <span className="text-lg">🎫</span>
-            </span>
-            <div>
-              <p className="font-semibold text-gray-900">Créer plus de forfaits</p>
-              <p className="text-sm text-gray-600">
-                Transferts aéroport, excursions, navettes régulières avec prix fixes
-              </p>
-            </div>
+          <div className="flex items-center gap-2 text-sm text-stone-700">
+            <span className="text-emerald-600">•</span>
+            <span>Créer plus de forfaits</span>
           </div>
-
-          <div className="flex items-start gap-3 p-3 bg-white rounded-xl">
-            <span className="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
-              <span className="text-lg">🎁</span>
-            </span>
-            <div>
-              <p className="font-semibold text-gray-900">Codes promo</p>
-              <p className="text-sm text-gray-600">
-                Créez des réductions pour fidéliser vos clients
-              </p>
-            </div>
+          <div className="flex items-center gap-2 text-sm text-stone-700">
+            <span className="text-emerald-600">•</span>
+            <span>Gérer les majorations</span>
           </div>
         </div>
       </div>
@@ -171,7 +127,7 @@ export default function WizardStep4Education({ wizardData, onNext, onBack, savin
         <button
           type="button"
           onClick={onBack}
-          className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
+          className="px-6 py-3 bg-stone-100 text-stone-700 rounded-xl font-semibold hover:bg-stone-200 transition-all border border-stone-200"
         >
           ← Retour
         </button>
@@ -180,9 +136,12 @@ export default function WizardStep4Education({ wizardData, onNext, onBack, savin
           type="button"
           onClick={() => onNext({})}
           disabled={saving}
-          className="px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-bold text-lg hover:shadow-xl hover:scale-105 transition-all disabled:opacity-50"
+          className="group relative px-8 py-4 bg-gradient-to-r from-stone-700 via-amber-600 to-stone-700 text-white rounded-xl font-bold text-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all disabled:opacity-50 overflow-hidden"
         >
-          {saving ? 'Sauvegarde...' : 'Compris, continuer →'}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+          <span className="relative">
+            {saving ? 'Sauvegarde...' : 'Continuer →'}
+          </span>
         </button>
       </div>
     </div>

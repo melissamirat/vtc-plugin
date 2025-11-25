@@ -192,7 +192,7 @@ export default function SurchargesPage() {
                         min="0"
                         max="23"
                         value={surcharge.startHour}
-                        onChange={(e) => handleUpdateSurcharge(surcharge.id, 'startHour', parseInt(e.target.value))}
+                        onChange={(e) => handleUpdateSurcharge(surcharge.id, 'startHour', parseInt(e.target.value) || 0)}
                         className="w-full px-3 py-2 border rounded-lg"
                       />
                     </div>
@@ -203,7 +203,7 @@ export default function SurchargesPage() {
                         min="0"
                         max="23"
                         value={surcharge.endHour}
-                        onChange={(e) => handleUpdateSurcharge(surcharge.id, 'endHour', parseInt(e.target.value))}
+                        onChange={(e) => handleUpdateSurcharge(surcharge.id, 'endHour', parseInt(e.target.value) || 0)}
                         className="w-full px-3 py-2 border rounded-lg"
                       />
                     </div>
@@ -215,7 +215,7 @@ export default function SurchargesPage() {
                     type="number"
                     step="0.5"
                     value={surcharge.amount}
-                    onChange={(e) => handleUpdateSurcharge(surcharge.id, 'amount', parseFloat(e.target.value))}
+                    onChange={(e) => handleUpdateSurcharge(surcharge.id, 'amount', parseFloat(e.target.value) || 0)}
                     className="w-full px-3 py-2 border rounded-lg"
                   />
                 </div>
@@ -286,7 +286,7 @@ export default function SurchargesPage() {
                         min="0"
                         max="23"
                         value={newSurcharge.startHour}
-                        onChange={(e) => setNewSurcharge({...newSurcharge, startHour: parseInt(e.target.value)})}
+                        onChange={(e) => setNewSurcharge({...newSurcharge, startHour: parseInt(e.target.value) || 0})}
                         className="w-full px-4 py-2 border rounded-lg"
                       />
                     </div>
@@ -297,7 +297,7 @@ export default function SurchargesPage() {
                         min="0"
                         max="23"
                         value={newSurcharge.endHour}
-                        onChange={(e) => setNewSurcharge({...newSurcharge, endHour: parseInt(e.target.value)})}
+                        onChange={(e) => setNewSurcharge({...newSurcharge, endHour: parseInt(e.target.value) || 0})}
                         className="w-full px-4 py-2 border rounded-lg"
                       />
                     </div>
@@ -329,7 +329,7 @@ export default function SurchargesPage() {
                     type="number"
                     step="0.5"
                     value={newSurcharge.amount}
-                    onChange={(e) => setNewSurcharge({...newSurcharge, amount: parseFloat(e.target.value)})}
+                    onChange={(e) => setNewSurcharge({...newSurcharge, amount: parseFloat(e.target.value) || 0})}
                     className="w-full px-4 py-2 border rounded-lg"
                   />
                 </div>

@@ -1,5 +1,6 @@
 // src/app/api/send-cancellation/route.js
 // API pour envoyer l'email d'ANNULATION au client
+// VERSION CORRIGÉE - Compatible avec nouvelle structure
 
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
@@ -9,6 +10,12 @@ function getCancellationEmailTemplate(booking, config, reason) {
   const companyName = config?.branding?.companyName || 'VTC Service';
   const primaryColor = '#dc2626'; // Rouge pour annulation
   const vehicleName = booking.vehicle?.name || booking.vehicle || '-';
+  
+  // ✅ CORRIGÉ - Utilise la nouvelle structure
+  const tripDate = booking.trip?.date || booking.date || '-';
+  const tripTime = booking.trip?.time || booking.time || '-';
+  const departure = booking.trip?.departure || booking.departure?.address || '-';
+  const arrival = booking.trip?.arrival || booking.arrival?.address || '-';
   
   // Message personnalisé selon le motif
   let reasonMessage = '';
@@ -51,7 +58,7 @@ function getCancellationEmailTemplate(booking, config, reason) {
           <span style="font-size: 28px;">✗</span>
         </div>
         <h1 style="color: #ffffff; margin: 0; font-size: 22px;">${companyName}</h1>
-        <p style="color: #ffffff; opacity: 0.9; margin: 8px 0 0 0; font-size: 16px;">Reservation Annulee</p>
+        <p style="color: #ffffff; opacity: 0.9; margin: 8px 0 0 0; font-size: 16px;">Reservation Annulée</p>
       </td>
     </tr>
     <tr>
@@ -60,11 +67,9 @@ function getCancellationEmailTemplate(booking, config, reason) {
         
         <div style="background-color: #fef2f2; border: 2px solid #dc2626; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
           <p style="color: #991b1b; font-size: 14px; margin: 0; font-weight: bold;">
-            ${reasonIcon} Votre reservation a ete annulee
+            ${reasonIcon} Votre reservation a ete annulée
           </p>
-          <p style="color: #991b1b; font-size: 13px; margin: 10px 0 0 0;">
-            <strong>Motif :</strong> ${reason}
-          </p>
+          
         </div>
         
         <p style="color: #4b5563; line-height: 1.5; margin: 0 0 15px 0; font-size: 14px;">
@@ -76,15 +81,15 @@ function getCancellationEmailTemplate(booking, config, reason) {
           <table width="100%" cellpadding="6" cellspacing="0" style="font-size: 13px;">
             <tr>
               <td style="color: #6b7280;">Date</td>
-              <td style="color: #1f2937; text-align: right;">${booking.date || '-'} a ${booking.time || '-'}</td>
+              <td style="color: #1f2937; text-align: right;">${tripDate} a ${tripTime}</td>
             </tr>
             <tr>
               <td style="color: #6b7280;">Depart</td>
-              <td style="color: #1f2937; text-align: right; font-size: 12px;">${booking.departure?.address || '-'}</td>
+              <td style="color: #1f2937; text-align: right; font-size: 12px;">${departure}</td>
             </tr>
             <tr>
               <td style="color: #6b7280;">Arrivee</td>
-              <td style="color: #1f2937; text-align: right; font-size: 12px;">${booking.arrival?.address || '-'}</td>
+              <td style="color: #1f2937; text-align: right; font-size: 12px;">${arrival}</td>
             </tr>
             <tr>
               <td style="color: #6b7280;">Vehicule</td>
@@ -156,7 +161,7 @@ export async function POST(request) {
     await transporter.sendMail({
       from: `"${companyName}" <${fromEmail}>`,
       to: booking.customer.email,
-      subject: `❌ Reservation annulee - ${companyName}`,
+      subject: `❌ Reservation Annulée - ${companyName}`,
       html: getCancellationEmailTemplate(booking, config, reason),
     });
     

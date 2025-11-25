@@ -28,7 +28,7 @@ export default function SetupWizard({ widgetId, userId, onComplete }) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  // Charger les données sauvegardées (pour reprendre où on s'est arrêté)
+  // Charger les données sauvegardées
   useEffect(() => {
     loadWizardProgress();
   }, [widgetId]);
@@ -176,20 +176,15 @@ export default function SetupWizard({ widgetId, userId, onComplete }) {
     }
   };
 
-  const handleSkip = async () => {
-    await saveProgress({}, currentStep);
-    
-    if (currentStep < TOTAL_STEPS - 1) {
-      setCurrentStep(currentStep + 1);
-    }
-  };
-
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-stone-50 via-amber-50 to-stone-100">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-indigo-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 font-medium">Chargement de votre configuration...</p>
+          <div className="relative">
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-transparent border-t-amber-600 border-r-stone-700 mx-auto mb-4"></div>
+            <div className="absolute inset-0 animate-ping rounded-full h-16 w-16 border-2 border-amber-500 opacity-20"></div>
+          </div>
+          <p className="text-stone-700 font-semibold">Chargement de votre configuration...</p>
         </div>
       </div>
     );
@@ -197,11 +192,13 @@ export default function SetupWizard({ widgetId, userId, onComplete }) {
 
   // Barre de progression
   const ProgressBar = () => (
-    <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
+    <div className="w-full bg-stone-200 rounded-full h-2.5 mb-2 overflow-hidden">
       <div 
-        className="bg-gradient-to-r from-blue-500 to-indigo-600 h-2 rounded-full transition-all duration-500"
+        className="bg-gradient-to-r from-stone-700 via-amber-600 to-stone-700 h-2.5 transition-all duration-500 ease-out relative"
         style={{ width: `${((currentStep + 1) / TOTAL_STEPS) * 100}%` }}
-      />
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"></div>
+      </div>
     </div>
   );
 
@@ -211,12 +208,12 @@ export default function SetupWizard({ widgetId, userId, onComplete }) {
       {[...Array(TOTAL_STEPS)].map((_, index) => (
         <div
           key={index}
-          className={`w-3 h-3 rounded-full transition-all duration-300 ${
+          className={`transition-all duration-300 rounded-full ${
             index === currentStep
-              ? 'bg-indigo-600 scale-125'
+              ? 'w-8 h-3 bg-gradient-to-r from-stone-700 to-amber-600 scale-110'
               : index < currentStep || wizardData.completedSteps.includes(index)
-              ? 'bg-green-500'
-              : 'bg-gray-300'
+              ? 'w-3 h-3 bg-emerald-500'
+              : 'w-3 h-3 bg-stone-300'
           }`}
         />
       ))}
@@ -227,23 +224,22 @@ export default function SetupWizard({ widgetId, userId, onComplete }) {
     wizardData,
     onNext: handleNext,
     onBack: handleBack,
-    onSkip: handleSkip,
     saving,
     widgetId,
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-stone-50 via-amber-50 to-stone-100">
       {/* Header avec progression */}
-      <div className="sticky top-0 z-50 bg-white/90 backdrop-blur-sm shadow-sm">
+      <div className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl shadow-lg shadow-stone-900/5 border-b border-stone-200">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <ProgressBar />
           <div className="flex justify-between items-center">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm font-medium text-stone-700">
               Étape {currentStep + 1} sur {TOTAL_STEPS}
             </p>
             {saving && (
-              <p className="text-xs text-indigo-600 flex items-center gap-1">
+              <p className="text-xs text-amber-600 flex items-center gap-1 font-medium">
                 <span className="animate-spin">⏳</span> Sauvegarde...
               </p>
             )}
@@ -261,6 +257,16 @@ export default function SetupWizard({ widgetId, userId, onComplete }) {
         {currentStep === 4 && <WizardStep4Education {...stepProps} />}
         {currentStep === 5 && <WizardStep5Payment {...stepProps} />}
       </div>
+
+      <style jsx>{`
+        @keyframes shimmer {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
+        .animate-shimmer {
+          animation: shimmer 2s infinite;
+        }
+      `}</style>
     </div>
   );
 }
