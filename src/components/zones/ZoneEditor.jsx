@@ -160,21 +160,7 @@ export default function ZoneEditor({ zone, vehicles, mapsLoaded, onSave, onCance
                 />
               </div>
 
-              <div>
-                <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 sm:mb-2">
-                  Priorité
-                </label>
-                <input
-                  type="number"
-                  min="1"
-                  value={editedZone.priority || 1}
-                  onChange={(e) => handleUpdate('priority', parseInt(e.target.value))}
-                  className="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all text-sm sm:text-base"
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  Plus le nombre est élevé, plus cette zone sera prioritaire
-                </p>
-              </div>
+              
 
               <div className="flex items-center gap-2 sm:gap-3 p-3 sm:p-4 bg-blue-50 rounded-lg border border-blue-200">
                 <input
@@ -218,13 +204,18 @@ export default function ZoneEditor({ zone, vehicles, mapsLoaded, onSave, onCance
                   Délai minimum (heures)
                 </label>
                 <input
-                  type="number"
-                  min="0"
-                  value={editedZone.restrictions?.minBookingHours || 0}
-                  onChange={(e) => handleUpdate('restrictions', {
-                    ...editedZone.restrictions,
-                    minBookingHours: parseInt(e.target.value)
-                  })}
+                  type="text"
+                  inputMode="numeric"
+                  value={editedZone.restrictions?.minBookingHours || ''}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^0-9]/g, '');
+                    handleUpdate('restrictions', {
+                      ...editedZone.restrictions,
+                      minBookingHours: value === '' ? 0 : parseInt(value)
+                    });
+                  }}
+                  onFocus={(e) => e.target.select()}
+                  placeholder="0"
                   className="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
                 />
                 <p className="text-xs text-gray-500 mt-1">

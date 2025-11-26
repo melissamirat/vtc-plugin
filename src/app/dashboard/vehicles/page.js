@@ -126,19 +126,19 @@ export default function VehiclesPage() {
 
   if (!user || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-indigo-50 to-purple-100">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-stone-100 via-gray-50 to-gray-100">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-stone-700"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-indigo-50 to-purple-100">
+    <div className="min-h-screen bg-gradient-to-br from-stone-100 via-gray-50 to-gray-100">
       <header className="bg-white/90 backdrop-blur-sm shadow-md sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-stone-700 to-stone-600 bg-clip-text text-transparent">
                 Gestion des Véhicules
               </h1>
               <p className="text-sm text-gray-600 mt-0.5">
@@ -160,7 +160,7 @@ export default function VehiclesPage() {
         {message.text && (
           <div className={`mb-6 p-4 rounded-xl shadow-lg border-2 animate-in fade-in slide-in-from-top-2 ${
             message.type === 'success' 
-              ? 'bg-green-50 border-green-300 text-green-800' 
+              ? 'bg-stone-50 border-stone-400 text-stone-800' 
               : 'bg-red-50 border-red-300 text-red-800'
           }`}>
             <p className="font-medium">{message.text}</p>
@@ -170,7 +170,7 @@ export default function VehiclesPage() {
         <div className="mb-6 flex justify-end">
           <button
             onClick={handleAddVehicle}
-            className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:shadow-xl hover:scale-105 transition-all font-semibold flex items-center gap-2"
+            className="px-6 py-3 bg-gradient-to-r from-stone-700 to-stone-600 text-white rounded-xl hover:shadow-xl hover:scale-105 transition-all font-semibold flex items-center gap-2"
           >
             <span className="text-xl">+</span>
             Ajouter un véhicule
@@ -194,7 +194,7 @@ export default function VehiclesPage() {
             };
             
             return (
-              <div key={vehicle.id} className="bg-white/80 backdrop-blur-sm rounded-xl border-2 border-blue-200 shadow-md hover:shadow-lg hover:border-blue-300 transition-all p-4">
+              <div key={vehicle.id} className="bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-stone-300 shadow-lg hover:shadow-2xl hover:border-stone-400 transition-all p-6">
               
                 {/* Header */}
                 <div className="mb-4">
@@ -204,13 +204,13 @@ export default function VehiclesPage() {
                         type="text"
                         value={vehicle.name || ''}
                         onChange={(e) => handleUpdateVehicle(vehicle.id, 'name', e.target.value)}
-                        className="text-xl font-bold text-gray-900 bg-transparent border-b-2 border-transparent hover:border-blue-300 focus:border-blue-500 outline-none transition-colors w-full mb-0.5"
+                        className="text-xl font-bold text-gray-900 bg-transparent border-b-2 border-transparent hover:border-stone-300 focus:border-stone-500 outline-none transition-colors w-full mb-0.5"
                       />
                       <input
                         type="text"
                         value={vehicle.description || ''}
                         onChange={(e) => handleUpdateVehicle(vehicle.id, 'description', e.target.value)}
-                        className="text-xs text-gray-600 bg-transparent border-b border-transparent hover:border-blue-300 focus:border-blue-500 outline-none w-full transition-colors"
+                        className="text-xs text-gray-600 bg-transparent border-b border-transparent hover:border-stone-300 focus:border-stone-500 outline-none w-full transition-colors"
                       />
                     </div>
                   </div>
@@ -218,14 +218,14 @@ export default function VehiclesPage() {
                   <div className="flex items-center justify-between gap-2">
                     <label className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg cursor-pointer transition-colors ${
                       vehicle.enabled 
-                        ? 'bg-green-50 text-green-700 border-2 border-green-200' 
-                        : 'bg-gray-50 text-gray-600 border-2 border-gray-200'
+                        ? 'bg-stone-100 text-stone-700' 
+                        : 'bg-gray-100 text-gray-600'
                     }`}>
                       <input
                         type="checkbox"
                         checked={vehicle.enabled}
                         onChange={(e) => handleUpdateVehicle(vehicle.id, 'enabled', e.target.checked)}
-                        className="w-4 h-4 rounded border-gray-300 text-green-600 focus:ring-green-500"
+                        className="w-4 h-4 rounded border-gray-300 text-stone-600 focus:ring-stone-500"
                       />
                       <span className="text-xs font-semibold">
                         {vehicle.enabled ? '✓ Actif' : '○ Inactif'}
@@ -244,155 +244,190 @@ export default function VehiclesPage() {
                 </div>
 
                 {/* Configuration de base */}
-                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-3 mb-3 border-2 border-blue-200">
-                  <h4 className="font-bold text-xs text-blue-900 mb-2 uppercase tracking-wide">⚙️ Configuration</h4>
+                <div className="bg-gradient-to-br from-stone-50 to-stone-100 rounded-2xl p-5 mb-3 border-2 border-stone-300">
+                  <h4 className="font-bold text-lg text-stone-900 mb-4">⚙️ Configuration</h4>
                   <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1">👥 Passagers max</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">👥 Passagers max</label>
                     <input
-                      type="number"
-                      value={vehicle.maxPassengers || 0}
-                      onChange={(e) => handleUpdateVehicle(vehicle.id, 'maxPassengers', parseInt(e.target.value))}
-                      className="w-full px-2 py-1.5 border-2 border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all"
+                      type="text"
+                      inputMode="numeric"
+                      value={vehicle.maxPassengers || ''}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/[^0-9]/g, '');
+                        handleUpdateVehicle(vehicle.id, 'maxPassengers', value === '' ? 0 : parseInt(value));
+                      }}
+                      onFocus={(e) => e.target.select()}
+                      placeholder="4"
+                      className="w-full px-4 py-3 border-2 border-stone-300 rounded-xl focus:ring-2 focus:ring-stone-500 focus:border-stone-500 transition-all"
                     />
                   </div>
                 </div>
 
                 {/* SECTION BAGAGES - CLAIRE ET EXPLICITE */}
-                <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-lg p-3 mb-3 border-2 border-orange-200">
-                  <h4 className="font-bold text-xs text-orange-900 mb-2 flex items-center gap-2">
+                <div className="bg-gradient-to-br from-stone-50 to-stone-100 rounded-2xl p-5 mb-3 border-2 border-stone-300">
+                  <h4 className="font-bold text-lg text-stone-900 mb-4 flex items-center gap-2">
                     <span className="text-xl">🧳</span>
                     Bagages
                   </h4>
                   
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-3 gap-4">
                     
                     {/* Bagages gratuits */}
                     <div>
-                      <label className="block text-xs font-semibold text-gray-700 mb-1">
-                        ✅ GRATUITS
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        ✅ Gratuits
                       </label>
                       <input
-                        type="number"
-                        min="0"
-                        value={luggage.included}
-                        onChange={(e) => handleUpdateLuggage(vehicle.id, 'included', e.target.value)}
-                        className="w-full px-2 py-2 border-2 border-green-300 rounded-lg text-base font-bold text-center focus:ring-2 focus:ring-green-500 bg-green-50 transition-all"
+                        type="text"
+                        inputMode="numeric"
+                        value={luggage.included || ''}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^0-9]/g, '');
+                          handleUpdateLuggage(vehicle.id, 'included', value === '' ? 0 : parseInt(value));
+                        }}
+                        onFocus={(e) => e.target.select()}
+                        placeholder="2"
+                        className="w-full px-3 py-2 border-2 border-stone-300 rounded-xl text-base font-bold text-center focus:ring-2 focus:ring-stone-500 focus:border-stone-500 transition-all"
                       />
-                      <p className="text-[10px] text-gray-600 mt-0.5 text-center">
+                      <p className="text-xs text-gray-600 mt-1 text-center">
                         Inclus
                       </p>
                     </div>
 
                     {/* Bagages max */}
                     <div>
-                      <label className="block text-xs font-semibold text-gray-700 mb-1">
-                        📦 MAX total
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        📦 Max total
                       </label>
                       <input
-                        type="number"
-                        min={luggage.included}
-                        value={luggage.max}
-                        onChange={(e) => handleUpdateLuggage(vehicle.id, 'max', e.target.value)}
-                        className="w-full px-2 py-2 border-2 border-orange-300 rounded-lg text-base font-bold text-center focus:ring-2 focus:ring-orange-500 bg-white transition-all"
+                        type="text"
+                        inputMode="numeric"
+                        value={luggage.max || ''}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^0-9]/g, '');
+                          handleUpdateLuggage(vehicle.id, 'max', value === '' ? 0 : parseInt(value));
+                        }}
+                        onFocus={(e) => e.target.select()}
+                        placeholder="4"
+                        className="w-full px-3 py-2 border-2 border-stone-300 rounded-xl text-base font-bold text-center focus:ring-2 focus:ring-stone-500 focus:border-stone-500 transition-all"
                       />
-                      <p className="text-[10px] text-gray-600 mt-0.5 text-center">
-                        Capacité max
+                      <p className="text-xs text-gray-600 mt-1 text-center">
+                        Capacité
                       </p>
                     </div>
 
                     {/* Prix bagage supplémentaire */}
                     <div>
-                      <label className="block text-xs font-semibold text-gray-700 mb-1">
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
                         💰 Prix/bagage
                       </label>
                       <div className="relative">
                         <input
-                          type="number"
-                          step="0.5"
-                          min="0"
-                          value={luggage.pricePerExtra}
-                          onChange={(e) => handleUpdateLuggage(vehicle.id, 'pricePerExtra', e.target.value)}
-                          className="w-full px-2 py-2 pr-6 border-2 border-blue-300 rounded-lg text-base font-bold text-center focus:ring-2 focus:ring-blue-500 bg-blue-50 transition-all"
+                          type="text"
+                          inputMode="decimal"
+                          value={luggage.pricePerExtra || ''}
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/[^0-9.]/g, '');
+                            handleUpdateLuggage(vehicle.id, 'pricePerExtra', value === '' ? 0 : parseFloat(value));
+                          }}
+                          onFocus={(e) => e.target.select()}
+                          placeholder="5"
+                          className="w-full px-3 py-2 pr-8 border-2 border-stone-300 rounded-xl text-base font-bold text-center focus:ring-2 focus:ring-stone-500 focus:border-stone-500 transition-all"
                         />
-                        <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-500">€</span>
+                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-bold text-gray-500">€</span>
                       </div>
-                      <p className="text-[10px] text-gray-600 mt-0.5 text-center">
+                      <p className="text-xs text-gray-600 mt-1 text-center">
                         Supplément
                       </p>
                     </div>
                   </div>
 
                   {/* Récapitulatif visuel */}
-                  <div className="mt-2 p-2 bg-white border-2 border-orange-200 rounded-lg">
+                  <div className="mt-4 p-3 bg-white border border-stone-200 rounded-lg">
                     <div className="grid grid-cols-3 gap-2 text-xs">
                       <div className="text-center">
                         <div className="text-lg mb-0.5">✅</div>
-                        <div className="font-bold text-green-700 text-xs">
+                        <div className="font-bold text-stone-700 text-sm">
                           {luggage.included}
                         </div>
-                        <div className="text-[9px] text-gray-600">GRATUIT</div>
+                        <div className="text-xs text-gray-600">GRATUIT</div>
                       </div>
                       
                       <div className="text-center">
                         <div className="text-lg mb-0.5">💰</div>
-                        <div className="font-bold text-orange-700 text-xs">
+                        <div className="font-bold text-stone-700 text-sm">
                           {paidLuggage}
                         </div>
-                        <div className="text-[9px] text-gray-600">
+                        <div className="text-xs text-gray-600">
                           {luggage.pricePerExtra}€
                         </div>
                       </div>
                       
                       <div className="text-center">
                         <div className="text-lg mb-0.5">📦</div>
-                        <div className="font-bold text-blue-700 text-xs">
+                        <div className="font-bold text-stone-700 text-sm">
                           {luggage.max}
                         </div>
-                        <div className="text-[9px] text-gray-600">MAX</div>
+                        <div className="text-xs text-gray-600">MAX</div>
                       </div>
                     </div>
 
                     {/* Exemple de calcul */}
-                    <div className="mt-1.5 pt-1.5 border-t border-orange-200">
-                      <p className="text-[10px] text-center text-gray-700">
-                        <strong>Ex:</strong> {luggage.max} bagages = <strong className="text-orange-700">{(paidLuggage * luggage.pricePerExtra).toFixed(2)}€</strong> supp.
+                    <div className="mt-2 pt-2 border-t border-stone-200">
+                      <p className="text-xs text-center text-gray-700">
+                        <strong>Ex:</strong> {luggage.max} bagages = <strong className="text-stone-700">{(paidLuggage * luggage.pricePerExtra).toFixed(2)}€</strong> supp.
                       </p>
                     </div>
                   </div>
                 </div>
 
                 {/* Tarification */}
-                <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-3 mb-3 border-2 border-purple-200">
-                  <h4 className="font-bold text-xs text-purple-900 mb-2 uppercase tracking-wide">💵 Tarification</h4>
-                  <div className="grid grid-cols-1 gap-2">
+                <div className="bg-gradient-to-br from-stone-50 to-stone-100 rounded-2xl p-5 mb-3 border-2 border-stone-300">
+                  <h4 className="font-bold text-lg text-stone-900 mb-4">💵 Tarification</h4>
+                  <div className="grid grid-cols-1 gap-4">
                     <div>
-                      <label className="block text-xs font-semibold text-gray-700 mb-1">Forfait min (€)</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Forfait min (€)</label>
                       <input
-                        type="number"
-                        step="0.5"
-                        value={pricing.minPrice || 0}
-                        onChange={(e) => handleUpdatePricing(vehicle.id, 'minPrice', e.target.value)}
-                        className="w-full px-2 py-1.5 border-2 border-purple-200 rounded-lg focus:ring-2 focus:ring-purple-500 transition-all"
+                        type="text"
+                        inputMode="decimal"
+                        value={pricing.minPrice || ''}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^0-9.]/g, '');
+                          handleUpdatePricing(vehicle.id, 'minPrice', value === '' ? 0 : parseFloat(value));
+                        }}
+                        onFocus={(e) => e.target.select()}
+                        placeholder="15"
+                        className="w-full px-4 py-3 border-2 border-stone-300 rounded-xl focus:ring-2 focus:ring-stone-500 focus:border-stone-500 transition-all"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-gray-700 mb-1">Seuil km</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Seuil km</label>
                       <input
-                        type="number"
-                        step="1"
-                        value={pricing.kmThreshold || 0}
-                        onChange={(e) => handleUpdatePricing(vehicle.id, 'kmThreshold', e.target.value)}
-                        className="w-full px-2 py-1.5 border-2 border-purple-200 rounded-lg focus:ring-2 focus:ring-purple-500 transition-all"
+                        type="text"
+                        inputMode="numeric"
+                        value={pricing.kmThreshold || ''}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^0-9]/g, '');
+                          handleUpdatePricing(vehicle.id, 'kmThreshold', value === '' ? 0 : parseInt(value));
+                        }}
+                        onFocus={(e) => e.target.select()}
+                        placeholder="5"
+                        className="w-full px-4 py-3 border-2 border-stone-300 rounded-xl focus:ring-2 focus:ring-stone-500 focus:border-stone-500 transition-all"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-gray-700 mb-1">Prix/km (€)</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Prix/km (€)</label>
                       <input
-                        type="number"
-                        step="0.1"
-                        value={pricing.perKm || 0}
-                        onChange={(e) => handleUpdatePricing(vehicle.id, 'perKm', e.target.value)}
-                        className="w-full px-2 py-1.5 border-2 border-purple-200 rounded-lg focus:ring-2 focus:ring-purple-500 transition-all"
+                        type="text"
+                        inputMode="decimal"
+                        value={pricing.perKm || ''}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^0-9.]/g, '');
+                          handleUpdatePricing(vehicle.id, 'perKm', value === '' ? 0 : parseFloat(value));
+                        }}
+                        onFocus={(e) => e.target.select()}
+                        placeholder="1.8"
+                        className="w-full px-4 py-3 border-2 border-stone-300 rounded-xl focus:ring-2 focus:ring-stone-500 focus:border-stone-500 transition-all"
                       />
                     </div>
                   </div>
@@ -404,11 +439,11 @@ export default function VehiclesPage() {
 
         {/* Bouton sauvegarder fixe */}
         {vehicles.length > 0 && (
-          <div className="sticky bottom-4 bg-white/90 backdrop-blur-sm border-2 border-blue-300 rounded-xl p-3 shadow-xl">
+          <div className="sticky bottom-4 bg-white border border-stone-300 rounded-xl p-2.5 shadow-lg">
             <button
               onClick={handleSave}
               disabled={saving}
-              className="w-full px-5 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:shadow-lg font-bold text-base disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:scale-[1.01]"
+              className="w-full px-5 py-2.5 bg-gradient-to-r from-stone-700 to-stone-600 text-white rounded-lg hover:shadow-lg font-semibold text-base disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               {saving ? (
                 <span className="flex items-center justify-center gap-2">

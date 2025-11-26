@@ -183,11 +183,15 @@ export default function VehiclePricingEditor({ vehiclePricing, vehicles, onChang
                           📏 Prix par kilomètre (€/km)
                         </label>
                         <input
-                          type="number"
-                          step="0.1"
-                          min="0"
-                          value={vp.pricing.pricePerKm || 0}
-                          onChange={(e) => handleUpdatePricing(vp.vehicleId, 'pricePerKm', e.target.value)}
+                          type="text"
+                          inputMode="decimal"
+                          value={vp.pricing.pricePerKm || ''}
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/[^0-9.]/g, '');
+                            handleUpdatePricing(vp.vehicleId, 'pricePerKm', value === '' ? 0 : value);
+                          }}
+                          onFocus={(e) => e.target.select()}
+                          placeholder="1.8"
                           className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 text-center font-bold"
                         />
                       </div>
@@ -198,11 +202,15 @@ export default function VehiclePricingEditor({ vehiclePricing, vehicles, onChang
                           🎯 Forfait minimum (€)
                         </label>
                         <input
-                          type="number"
-                          step="0.5"
-                          min="0"
-                          value={vp.pricing.minPrice || 0}
-                          onChange={(e) => handleUpdatePricing(vp.vehicleId, 'minPrice', e.target.value)}
+                          type="text"
+                          inputMode="decimal"
+                          value={vp.pricing.minPrice || ''}
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/[^0-9.]/g, '');
+                            handleUpdatePricing(vp.vehicleId, 'minPrice', value === '' ? 0 : value);
+                          }}
+                          onFocus={(e) => e.target.select()}
+                          placeholder="15"
                           className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 text-center font-bold"
                         />
                       </div>
@@ -213,31 +221,22 @@ export default function VehiclePricingEditor({ vehiclePricing, vehicles, onChang
                           📐 Seuil kilométrique (km)
                         </label>
                         <input
-                          type="number"
-                          step="1"
-                          min="0"
-                          value={vp.pricing.kmThreshold || 0}
-                          onChange={(e) => handleUpdatePricing(vp.vehicleId, 'kmThreshold', e.target.value)}
+                          type="text"
+                          inputMode="numeric"
+                          value={vp.pricing.kmThreshold || ''}
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/[^0-9]/g, '');
+                            handleUpdatePricing(vp.vehicleId, 'kmThreshold', value === '' ? 0 : value);
+                          }}
+                          onFocus={(e) => e.target.select()}
+                          placeholder="5"
                           className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 text-center font-bold"
                         />
                         <p className="text-[10px] text-gray-500 mt-0.5">En dessous : prix minimum. Au-dessus : prix/km</p>
                       </div>
 
                       {/* Exemple de calcul */}
-                      <div className="mt-4 p-3 bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg border-2 border-purple-200">
-                        <div className="text-xs font-semibold text-purple-900 mb-2">💡 Exemple de tarif</div>
-                        <div className="space-y-1 text-xs text-purple-800">
-                          <div className="flex justify-between">
-                            <span>Course de 10 km:</span>
-                            <span className="font-bold">
-                              {((vp.pricing.basePrice || 0) + ((vp.pricing.pricePerKm || 0) * 10)).toFixed(2)}€
-                            </span>
-                          </div>
-                          <div className="text-[10px] text-purple-700 mt-1 pt-1 border-t border-purple-200">
-                            {vp.pricing.basePrice || 0}€ (base) + {vp.pricing.pricePerKm || 0}€ × 10 km
-                          </div>
-                        </div>
-                      </div>
+                      
                     </div>
                   )}
                 </div>

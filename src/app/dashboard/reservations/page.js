@@ -17,7 +17,7 @@ function DeleteConfirmationModal({ isOpen, onClose, onConfirm, booking, isLoadin
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm p-4">
-      <div className="bg-white rounded-2xl shadow-2xl p-6 max-w-md w-full">
+      <div className="bg-white rounded-3xl shadow-2xl p-6 max-w-md w-full">
         <div className="flex justify-center mb-4">
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
             <svg
@@ -95,7 +95,7 @@ function ConfirmationModal({ isOpen, onClose, onConfirm, booking, isLoading }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm p-4">
-      <div className="bg-white rounded-2xl shadow-2xl p-6 max-w-md w-full">
+      <div className="bg-white rounded-3xl shadow-2xl p-6 max-w-md w-full">
         <div className="flex justify-center mb-4">
           <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center">
             <svg
@@ -118,15 +118,15 @@ function ConfirmationModal({ isOpen, onClose, onConfirm, booking, isLoading }) {
           Confirmer cette réservation ?
         </h2>
 
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-          <p className="text-sm text-blue-800 mb-2">
+        <div className="bg-stone-50 border border-stone-200 rounded-lg p-4 mb-4">
+          <p className="text-sm text-stone-800 mb-2">
             <strong>Client :</strong> {booking?.customer?.name || "Client"}
           </p>
-          <p className="text-sm text-blue-800 mb-2">
+          <p className="text-sm text-stone-800 mb-2">
             <strong>Date :</strong> {booking?.trip?.date} à{" "}
             {booking?.trip?.time}
           </p>
-          <p className="text-sm text-blue-800">
+          <p className="text-sm text-stone-800">
             <strong>Montant :</strong> {booking?.pricing?.priceEstimate || 0} €
           </p>
         </div>
@@ -189,7 +189,7 @@ function CancellationModal({ isOpen, onClose, onConfirm, booking, isLoading }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm p-4">
-      <div className="bg-white rounded-2xl shadow-2xl p-6 max-w-md w-full">
+      <div className="bg-white rounded-3xl shadow-2xl p-6 max-w-md w-full">
         <div className="flex justify-center mb-4">
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
             <svg
@@ -297,7 +297,7 @@ function ResultModal({ isOpen, onClose, isSuccess, message }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm p-4">
-      <div className="bg-white rounded-2xl shadow-2xl p-6 max-w-md w-full">
+      <div className="bg-white rounded-3xl shadow-2xl p-6 max-w-md w-full">
         <div className="flex justify-center mb-4">
           {isSuccess ? (
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
@@ -749,9 +749,9 @@ export default function ReservationsPage() {
 
   if (!user || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-stone-100 via-gray-50 to-gray-100">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-stone-700 mx-auto"></div>
           <p className="mt-4 text-gray-600">Chargement...</p>
         </div>
       </div>
@@ -759,7 +759,7 @@ export default function ReservationsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-stone-100 via-gray-50 to-gray-100">
       {/* Modals */}
       <ConfirmationModal
         isOpen={showConfirmModal}
@@ -807,7 +807,7 @@ export default function ReservationsPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-stone-700 to-stone-600 bg-clip-text text-transparent">
                 📋 Réservations
               </h1>
               <p className="text-sm text-gray-600">
@@ -832,7 +832,7 @@ export default function ReservationsPage() {
               onClick={() => setFilter("all")}
               className={`px-4 py-2 rounded-lg font-medium transition-all ${
                 filter === "all"
-                  ? "bg-blue-600 text-white shadow-md"
+                  ? "bg-gradient-to-r from-stone-700 to-stone-600 text-white shadow-md"
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
@@ -876,12 +876,12 @@ export default function ReservationsPage() {
 
         {/* Liste des réservations */}
         {filteredBookings.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-lg p-12 text-center">
-            <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-4xl">📭</span>
-            </div>
-            <p className="text-gray-600 text-lg mb-2">Aucune réservation</p>
-            <p className="text-gray-500 text-sm">
+          <div className="text-center py-20 bg-white/70 backdrop-blur-sm rounded-2xl border-2 border-stone-300 shadow-lg">
+            <div className="text-6xl mb-4">📭</div>
+            <h3 className="text-2xl font-bold text-gray-800 mb-2">
+              Aucune réservation
+            </h3>
+            <p className="text-gray-600">
               {filter !== "all"
                 ? "Essayez de changer le filtre"
                 : "Les réservations apparaîtront ici"}
@@ -892,7 +892,7 @@ export default function ReservationsPage() {
             {filteredBookings.map((booking) => (
               <div
                 key={booking.id}
-                className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow overflow-hidden"
+                className="bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-stone-300 shadow-lg hover:shadow-2xl hover:border-stone-400 transition-all"
               >
                 <div className="p-6">
                   {/* En-tête */}
@@ -918,7 +918,7 @@ export default function ReservationsPage() {
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-3xl font-bold text-blue-600">
+                      <p className="text-3xl font-bold text-stone-700">
                         {booking.pricing?.priceEstimate || "0"} €
                       </p>
                       <p className="text-sm text-gray-500">
@@ -928,7 +928,7 @@ export default function ReservationsPage() {
                   </div>
 
                   {/* Détails */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 p-4 bg-gradient-to-br from-gray-50 to-blue-50 rounded-xl">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 p-4 bg-gradient-to-br from-stone-50 to-stone-100 rounded-xl border border-stone-200">
                     <div>
                       <p className="text-xs text-gray-500 mb-1">📍 Départ</p>
                       <p className="text-sm font-medium text-gray-900">

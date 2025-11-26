@@ -84,19 +84,14 @@ export default function ZoneCard({ zone, onEdit, onDelete, onToggle, onDuplicate
         </div>
 
         {/* Statistiques véhicules */}
-        <div className="grid grid-cols-2 gap-2 mb-3">
-          <div className="p-2 bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg border border-purple-200">
+        <div className="grid grid-cols-1 gap-2 mb-3">
+          <div className="p-1 bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg border border-purple-200">
             <div className="text-xs font-semibold text-purple-900">Véhicules</div>
             <div className="text-lg font-bold text-purple-700">
               {activeVehicles}/{totalVehicles}
             </div>
           </div>
-          <div className="p-2 bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg border border-green-200">
-            <div className="text-xs font-semibold text-green-900">Priorité</div>
-            <div className="text-lg font-bold text-green-700">
-              {zone.priority || 1}
-            </div>
-          </div>
+          
         </div>
 
         {/* Aperçu des prix */}

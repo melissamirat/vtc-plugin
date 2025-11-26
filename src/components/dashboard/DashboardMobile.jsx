@@ -472,7 +472,7 @@ export default function DashboardMobile({
 
         {/* Réservations du jour */}
         {(() => {
-          const today = new Date().toISOString().split("T")[0];
+const today = new Date().toLocaleDateString('fr-CA'); // Format YYYY-MM-DD en heure locale
           const todayBookings = bookings.filter((booking) => {
             if (!booking.trip?.date) return false;
             if (booking.status === "cancelled") return false;

@@ -34,7 +34,7 @@ export default function WizardStep1Vehicle({ wizardData, onNext, onBack, saving 
   };
 
   const handleLuggageUpdate = (field, value) => {
-    const numValue = parseInt(value) || 0;
+    const numValue = value === '' ? 0 : parseInt(value) || 0;
     setVehicle(prev => ({
       ...prev,
       luggage: { ...prev.luggage, [field]: numValue }
@@ -42,7 +42,7 @@ export default function WizardStep1Vehicle({ wizardData, onNext, onBack, saving 
   };
 
   const handlePricingUpdate = (field, value) => {
-    const numValue = parseFloat(value) || 0;
+    const numValue = value === '' ? 0 : parseFloat(value) || 0;
     setVehicle(prev => ({
       ...prev,
       pricing: { ...prev.pricing, [field]: numValue }
@@ -84,12 +84,6 @@ export default function WizardStep1Vehicle({ wizardData, onNext, onBack, saving 
     <div className="max-w-3xl mx-auto">
       {/* En-tête modernisé */}
       <div className="text-center mb-8">
-        <div className="relative mb-6">
-          <div className="w-20 h-20 mx-auto bg-gradient-to-br from-stone-600 to-stone-700 rounded-full flex items-center justify-center shadow-xl shadow-stone-900/20">
-            <span className="text-4xl">🚗</span>
-          </div>
-          <div className="absolute inset-0 bg-gradient-to-br from-amber-500/20 to-transparent rounded-full blur-3xl"></div>
-        </div>
         <h2 className="text-2xl sm:text-3xl font-bold text-stone-900 mb-2">
           Configurez votre véhicule
         </h2>
@@ -124,13 +118,33 @@ export default function WizardStep1Vehicle({ wizardData, onNext, onBack, saving 
             {errors.name && <p className="text-sm text-red-600 mt-1 flex items-center gap-1">⚠️ {errors.name}</p>}
           </div>
           
-          
+          <div>
+            <label className="block text-sm font-semibold text-stone-700 mb-2">
+              Icône
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {vehicleIcons.map((icon) => (
+                <button
+                  key={icon}
+                  type="button"
+                  onClick={() => handleUpdate('icon', icon)}
+                  className={`group w-12 h-12 text-2xl rounded-xl border-2 transition-all duration-200 ${
+                    vehicle.icon === icon
+                      ? 'border-amber-500 bg-gradient-to-br from-amber-50 to-orange-50 scale-110 shadow-md'
+                      : 'border-stone-200 hover:border-stone-300 hover:bg-stone-50'
+                  }`}
+                >
+                  {icon}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Passagers */}
         <div className="mb-6">
           <label className="block text-sm font-semibold text-stone-700 mb-2">
-            👥 Nombre de passagers maximum
+            Nombre de passagers maximum
           </label>
           <div className="flex items-center gap-4 justify-center">
             <button
@@ -194,11 +208,15 @@ export default function WizardStep1Vehicle({ wizardData, onNext, onBack, saving 
               </label>
               <div className="relative">
                 <input
-                  type="number"
-                  step="0.5"
-                  min="0"
-                  value={vehicle.luggage.pricePerExtra}
-                  onChange={(e) => handleLuggageUpdate('pricePerExtra', e.target.value)}
+                  type="text"
+                  inputMode="decimal"
+                  value={vehicle.luggage.pricePerExtra || ''}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^0-9.]/g, '');
+                    handleLuggageUpdate('pricePerExtra', value);
+                  }}
+                  onFocus={(e) => e.target.select()}
+                  placeholder="5"
                   className="w-full px-3 py-2 border-2 border-amber-200 rounded-lg text-center text-xl font-bold bg-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all shadow-sm"
                 />
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-500 font-bold">€</span>
@@ -266,11 +284,15 @@ export default function WizardStep1Vehicle({ wizardData, onNext, onBack, saving 
               </label>
               <div className="relative">
                 <input
-                  type="number"
-                  step="0.5"
-                  min="0"
-                  value={vehicle.pricing.minPrice}
-                  onChange={(e) => handlePricingUpdate('minPrice', e.target.value)}
+                  type="text"
+                  inputMode="decimal"
+                  value={vehicle.pricing.minPrice || ''}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^0-9.]/g, '');
+                    handlePricingUpdate('minPrice', value);
+                  }}
+                  onFocus={(e) => e.target.select()}
+                  placeholder="15"
                   className="w-full px-3 py-3 border-2 border-stone-200 rounded-lg text-center text-xl font-bold focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all bg-white shadow-sm"
                 />
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-500 font-bold">€</span>
@@ -285,11 +307,15 @@ export default function WizardStep1Vehicle({ wizardData, onNext, onBack, saving 
               </label>
               <div className="relative">
                 <input
-                  type="number"
-                  step="1"
-                  min="0"
-                  value={vehicle.pricing.kmThreshold}
-                  onChange={(e) => handlePricingUpdate('kmThreshold', e.target.value)}
+                  type="text"
+                  inputMode="numeric"
+                  value={vehicle.pricing.kmThreshold || ''}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^0-9]/g, '');
+                    handlePricingUpdate('kmThreshold', value);
+                  }}
+                  onFocus={(e) => e.target.select()}
+                  placeholder="5"
                   className="w-full px-3 py-3 border-2 border-stone-200 rounded-lg text-center text-xl font-bold focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all bg-white shadow-sm"
                 />
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-500 font-bold">km</span>
@@ -304,11 +330,15 @@ export default function WizardStep1Vehicle({ wizardData, onNext, onBack, saving 
               </label>
               <div className="relative">
                 <input
-                  type="number"
-                  step="0.1"
-                  min="0"
-                  value={vehicle.pricing.perKm}
-                  onChange={(e) => handlePricingUpdate('perKm', e.target.value)}
+                  type="text"
+                  inputMode="decimal"
+                  value={vehicle.pricing.perKm || ''}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^0-9.]/g, '');
+                    handlePricingUpdate('perKm', value);
+                  }}
+                  onFocus={(e) => e.target.select()}
+                  placeholder="1.8"
                   className="w-full px-3 py-3 border-2 border-stone-200 rounded-lg text-center text-xl font-bold focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all bg-white shadow-sm"
                 />
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-500 font-bold">€/km</span>
@@ -317,7 +347,7 @@ export default function WizardStep1Vehicle({ wizardData, onNext, onBack, saving 
             </div>
           </div>
 
-          {/* Exemple de calcul */}
+          {/* Exemples de calcul */}
           <div className="mt-4 p-3 bg-white rounded-lg border border-stone-200 shadow-sm space-y-2">
             <p className="text-xs font-semibold text-stone-600 mb-2">💡 Exemples de calcul :</p>
             
@@ -354,12 +384,16 @@ export default function WizardStep1Vehicle({ wizardData, onNext, onBack, saving 
                 }
               </span>
             </div>
-          
-        
-</div>
+          </div>
         </div>
 
-        
+        {/* Info de compatibilité */}
+        <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+          <p className="text-xs text-blue-900">
+            <strong>💡 Note :</strong> Ces paramètres seront utilisés pour créer le pricing dans vehiclePricing 
+            (basePrice = minPrice, pricePerKm = perKm, kmThreshold)
+          </p>
+        </div>
       </div>
 
       {/* Boutons de navigation */}

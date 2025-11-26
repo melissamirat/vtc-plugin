@@ -31,6 +31,24 @@ export default function WizardStep2Zone({ wizardData, onNext, onBack, saving }) 
   const [geoType, setGeoType] = useState(zone.geography?.type || 'radius');
   const [useDefaultPricing, setUseDefaultPricing] = useState(true);
   
+  // Initialiser la tarification personnalisée avec les valeurs du véhicule
+  const handleTogglePricing = (checked) => {
+    setUseDefaultPricing(checked);
+    
+    // Si on désactive le tarif par défaut, initialiser avec les valeurs du véhicule
+    if (!checked && !zone.customPricing && wizardData.vehicle?.pricing) {
+      setZone(prev => ({
+        ...prev,
+        customPricing: {
+          minPrice: wizardData.vehicle.pricing.minPrice || 15,
+          basePrice: wizardData.vehicle.pricing.minPrice || 15,
+          kmThreshold: wizardData.vehicle.pricing.kmThreshold || 5,
+          pricePerKm: wizardData.vehicle.pricing.perKm || 1.8,
+        }
+      }));
+    }
+  };
+  
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const searchInputRef = useRef(null);
@@ -460,7 +478,7 @@ export default function WizardStep2Zone({ wizardData, onNext, onBack, saving }) 
             <input
               type="checkbox"
               checked={useDefaultPricing}
-              onChange={(e) => setUseDefaultPricing(e.target.checked)}
+              onChange={(e) => handleTogglePricing(e.target.checked)}
               className="sr-only peer"
             />
             <div className="w-14 h-7 bg-stone-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-amber-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-amber-500 peer-checked:to-amber-600"></div>
@@ -478,42 +496,64 @@ export default function WizardStep2Zone({ wizardData, onNext, onBack, saving }) 
               <div>
                 <label className="block text-xs font-bold text-stone-700 mb-1">Forfait min (€)</label>
                 <input
-                  type="number"
-                  step="0.5"
-                  value={zone.customPricing?.minPrice || wizardData.vehicle?.pricing?.minPrice || 15}
-                  onChange={(e) => setZone(prev => ({
-                    ...prev,
-                    customPricing: { 
-                      ...prev.customPricing, 
-                      minPrice: parseFloat(e.target.value),
-                      basePrice: parseFloat(e.target.value),
-                    }
-                  }))}
+                  type="text"
+                  inputMode="decimal"
+                  value={zone.customPricing?.minPrice || ''}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^0-9.]/g, '');
+                    setZone(prev => ({
+                      ...prev,
+                      customPricing: { 
+                        ...prev.customPricing, 
+                        minPrice: value === '' ? 0 : parseFloat(value),
+                        basePrice: value === '' ? 0 : parseFloat(value),
+                      }
+                    }));
+                  }}
+                  onFocus={(e) => e.target.select()}
+                  placeholder="15"
                   className="w-full px-3 py-2 border-2 border-stone-300 rounded-lg text-center font-bold focus:ring-2 focus:ring-amber-500"
                 />
               </div>
               <div>
                 <label className="block text-xs font-bold text-stone-700 mb-1">Seuil km</label>
                 <input
-                  type="number"
-                  value={zone.customPricing?.kmThreshold || wizardData.vehicle?.pricing?.kmThreshold || 5}
-                  onChange={(e) => setZone(prev => ({
-                    ...prev,
-                    customPricing: { ...prev.customPricing, kmThreshold: parseInt(e.target.value) }
-                  }))}
+                  type="text"
+                  inputMode="numeric"
+                  value={zone.customPricing?.kmThreshold || ''}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^0-9]/g, '');
+                    setZone(prev => ({
+                      ...prev,
+                      customPricing: { 
+                        ...prev.customPricing, 
+                        kmThreshold: value === '' ? 0 : parseInt(value)
+                      }
+                    }));
+                  }}
+                  onFocus={(e) => e.target.select()}
+                  placeholder="5"
                   className="w-full px-3 py-2 border-2 border-stone-300 rounded-lg text-center font-bold focus:ring-2 focus:ring-amber-500"
                 />
               </div>
               <div>
                 <label className="block text-xs font-bold text-stone-700 mb-1">Prix/km (€)</label>
                 <input
-                  type="number"
-                  step="0.1"
-                  value={zone.customPricing?.pricePerKm || wizardData.vehicle?.pricing?.perKm || 1.8}
-                  onChange={(e) => setZone(prev => ({
-                    ...prev,
-                    customPricing: { ...prev.customPricing, pricePerKm: parseFloat(e.target.value) }
-                  }))}
+                  type="text"
+                  inputMode="decimal"
+                  value={zone.customPricing?.pricePerKm || ''}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^0-9.]/g, '');
+                    setZone(prev => ({
+                      ...prev,
+                      customPricing: { 
+                        ...prev.customPricing, 
+                        pricePerKm: value === '' ? 0 : parseFloat(value)
+                      }
+                    }));
+                  }}
+                  onFocus={(e) => e.target.select()}
+                  placeholder="1.8"
                   className="w-full px-3 py-2 border-2 border-stone-300 rounded-lg text-center font-bold focus:ring-2 focus:ring-amber-500"
                 />
               </div>

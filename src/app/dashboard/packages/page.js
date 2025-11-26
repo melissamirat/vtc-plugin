@@ -435,7 +435,7 @@ export default function PackagesPage() {
         {/* Liste des forfaits */}
         {packages.length === 0 ? (
           <div className="text-center py-20 bg-white/70 backdrop-blur-sm rounded-2xl border-2 border-stone-300 shadow-lg">
-            <div className="text-6xl mb-4">📦</div>
+            <div className="text-6xl mb-4">🏷️</div>
             <h3 className="text-2xl font-bold text-gray-800 mb-2">
               Aucun forfait
             </h3>

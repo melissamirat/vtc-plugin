@@ -316,11 +316,18 @@ export default function WizardStep3Package({ wizardData, onNext, onBack, saving 
               </label>
               <div className="relative">
                 <input
-                  type="number"
-                  step="5"
-                  min="0"
-                  value={formData.price}
-                  onChange={(e) => setFormData(prev => ({ ...prev, price: parseFloat(e.target.value) || 0 }))}
+                  type="text"
+                  inputMode="decimal"
+                  value={formData.price || ''}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^0-9.]/g, '');
+                    setFormData(prev => ({ 
+                      ...prev, 
+                      price: value === '' ? 0 : parseFloat(value) || 0 
+                    }));
+                  }}
+                  onFocus={(e) => e.target.select()}
+                  placeholder="50"
                   className="w-full px-4 py-3 border-2 border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all shadow-sm pr-12"
                 />
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-500 font-bold">€</span>
